@@ -7,8 +7,8 @@ import org.folio.rest.client.ConfigurationsClient;
  */
 public class ConfigurationClientProvider {
 
-  public ConfigurationsClient createClient(String url, int port, String tenantId, String apiToken) {
-    return new ConfigurationsClient(url, port, tenantId, apiToken);
+  public ConfigurationsClient createClient(String url, int port, String apiToken) {
+    return new ConfigurationsClient(url, port, null, apiToken);
   }
 
 }

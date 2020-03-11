@@ -1,7 +1,11 @@
 package org.folio.holdingsiq.service.impl;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-
+import io.vertx.core.Context;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,14 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import io.vertx.core.Context;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import org.apache.commons.validator.routines.UrlValidator;
-
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
 import org.folio.holdingsiq.model.OkapiData;
@@ -25,7 +22,6 @@ import org.folio.holdingsiq.service.exception.ConfigurationServiceException;
 import org.folio.rest.client.ConfigurationsClient;
 import org.folio.rest.jaxrs.model.Config;
 import org.folio.rest.tools.client.Response;
-import org.folio.rest.tools.utils.TenantTool;
 
 /**
  * Retrieves the RM API connection details from mod-configuration.
@@ -96,12 +92,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
    * @return future that will complete when configuration is retrieved
    */
   private CompletableFuture<JsonObject> retrieveConfigurations(OkapiData okapiData) {
-    final String tenantId = TenantTool.calculateTenantId(okapiData.getTenant());
     CompletableFuture<JsonObject> future = new CompletableFuture<>();
     try {
       ConfigurationsClient configurationsClient = configurationClientProvider
-        .createClient(okapiData.getOkapiHost(), okapiData.getOkapiPort(), tenantId, okapiData.getApiToken());
-      configurationsClient.getEntries("module=EKB", 0, QUERY_LIMIT, null, null, response ->
+        .createClient(okapiData.getOkapiHost(), okapiData.getOkapiPort(), okapiData.getApiToken());
+      configurationsClient.getConfigurationsEntries("module=EKB", 0, QUERY_LIMIT, null, null, response ->
         response.bodyHandler(body -> {
           if (verifyResponse(response, body, future)) {
             future.complete(body.toJsonObject());
@@ -121,10 +116,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
    * @return future that will complete when all configurations are deleted
    */
   private CompletableFuture<Void> deleteConfigurations(List<String> configurationIds, OkapiData okapiData) {
-    final String tenantId = TenantTool.calculateTenantId(okapiData.getTenant());
     List<CompletableFuture<Void>> futures = new ArrayList<>();
     ConfigurationsClient configurationsClient = configurationClientProvider
-      .createClient(okapiData.getOkapiHost(), okapiData.getOkapiPort(), tenantId, okapiData.getApiToken());
+      .createClient(okapiData.getOkapiHost(), okapiData.getOkapiPort(), okapiData.getApiToken());
     for (String id : configurationIds) {
       futures.add(deleteConfiguration(configurationsClient, id));
     }
@@ -139,7 +133,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
   private CompletableFuture<Void> deleteConfiguration(ConfigurationsClient configurationsClient, String configurationId) {
     CompletableFuture<Void> future = new CompletableFuture<>();
     try {
-      configurationsClient.deleteEntryId(configurationId, null, response -> response.bodyHandler(body -> {
+      configurationsClient.deleteConfigurationsEntriesByEntryId(configurationId, null, response -> response.bodyHandler(body -> {
         if (verifyResponse(response, body, future)) {
           future.complete(null);
         }
@@ -158,10 +152,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
    * @return future that will complete when all configurations are posted
    */
   private CompletableFuture<Void> postConfigurations(List<Config> configurations, OkapiData okapiData) {
-    final String tenantId = TenantTool.calculateTenantId(okapiData.getTenant());
     List<CompletableFuture<Void>> futures = new ArrayList<>();
     ConfigurationsClient configurationsClient = configurationClientProvider
-      .createClient(okapiData.getOkapiHost(), okapiData.getOkapiPort(), tenantId, okapiData.getApiToken());
+      .createClient(okapiData.getOkapiHost(), okapiData.getOkapiPort(), okapiData.getApiToken());
     for (Config configuration : configurations) {
       futures.add(postConfiguration(configurationsClient, configuration));
     }
@@ -177,7 +170,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
   private CompletableFuture<Void> postConfiguration(ConfigurationsClient configurationsClient, Config configuration) {
     CompletableFuture<Void> future = new CompletableFuture<>();
     try {
-      configurationsClient.postEntries(null, configuration, response -> response.bodyHandler(body -> {
+      configurationsClient.postConfigurationsEntries(null, configuration, response -> response.bodyHandler(body -> {
         if (verifyResponse(response, body, future)) {
           future.complete(null);
         }

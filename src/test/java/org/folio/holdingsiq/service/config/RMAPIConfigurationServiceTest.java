@@ -41,7 +41,7 @@ public class RMAPIConfigurationServiceTest {
 
   @Before
   public void setUp() {
-    when(configurationClientProvider.createClient(anyString(), anyInt(), anyString(), anyString())).thenReturn(mockConfigurationsClient);
+    when(configurationClientProvider.createClient(anyString(), anyInt(), anyString())).thenReturn(mockConfigurationsClient);
   }
 
   @Test
@@ -50,7 +50,7 @@ public class RMAPIConfigurationServiceTest {
     when(response.statusCode()).thenReturn(400);
     when(response.bodyHandler(any())).thenAnswer(new HandleBodyAnswer(new BufferImpl()));
     doAnswer(new HandleResponseAnswer(response, 5))
-      .when(mockConfigurationsClient).getEntries(anyString(), anyInt(), anyInt(), any(), any(), any());
+      .when(mockConfigurationsClient).getConfigurationsEntries(anyString(), anyInt(), anyInt(), any(), any(), any());
     CompletableFuture<Configuration> future = configurationService.retrieveConfiguration(OKAPI_DATA);
     assertTrue(future.isCompletedExceptionally());
   }
@@ -58,7 +58,7 @@ public class RMAPIConfigurationServiceTest {
   @Test
   public void shouldCompleteExceptionallyWhenHttpClientThrowsException() throws Exception {
     doThrow(new UnsupportedEncodingException()).when(mockConfigurationsClient)
-      .getEntries(anyString(), anyInt(), anyInt(), any(), any(), any());
+      .getConfigurationsEntries(anyString(), anyInt(), anyInt(), any(), any(), any());
     CompletableFuture<Configuration> future = configurationService.retrieveConfiguration(OKAPI_DATA);
     assertTrue(future.isCompletedExceptionally());
   }
@@ -83,9 +83,9 @@ public class RMAPIConfigurationServiceTest {
     when(deleteResponse.bodyHandler(any())).thenAnswer(new HandleBodyAnswer(new BufferImpl()));
 
     doAnswer(new HandleResponseAnswer(getResponse, 5))
-      .when(mockConfigurationsClient).getEntries(anyString(), anyInt(), anyInt(), any(), any(), any());
+      .when(mockConfigurationsClient).getConfigurationsEntries(anyString(), anyInt(), anyInt(), any(), any(), any());
     doAnswer(new HandleResponseAnswer(deleteResponse, 2))
-      .when(mockConfigurationsClient).deleteEntryId(any(), any(), any());
+      .when(mockConfigurationsClient).deleteConfigurationsEntriesByEntryId(any(), any(), any());
 
     CompletableFuture<Configuration> future = configurationService.updateConfiguration(Configuration.builder().build(), OKAPI_DATA);
     assertTrue(future.isCompletedExceptionally());
