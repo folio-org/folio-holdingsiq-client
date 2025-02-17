@@ -5,39 +5,33 @@ import static io.vertx.core.Future.succeededFuture;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.validator.routines.UrlValidator.ALLOW_LOCAL_URLS;
-import static org.apache.http.HttpHeaders.ACCEPT;
 
-import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
-import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
-import static org.folio.util.FutureUtils.mapVertxFuture;
-
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
 import org.folio.holdingsiq.model.OkapiData;
 import org.folio.holdingsiq.service.ConfigurationService;
 import org.folio.holdingsiq.service.exception.ConfigurationServiceException;
 import org.folio.holdingsiq.service.exception.ServiceResponseException;
-import org.folio.rest.tools.utils.TenantTool;
+import org.folio.okapi.common.XOkapiHeaders;
 
 /**
  * Retrieves the RM API connection details from eHoldings.
@@ -89,7 +83,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
   private boolean isInvalidConfigurationException(Throwable exception) {
     Throwable cause = exception.getCause();
     return cause instanceof UnknownHostException || (cause instanceof ServiceResponseException
-      && isInvalidConfigurationStatusCode(((ServiceResponseException) cause).getCode()));
+                                                     && isInvalidConfigurationStatusCode(
+      ((ServiceResponseException) cause).getCode()));
   }
 
   private boolean isInvalidConfigurationStatusCode(Integer statusCode) {
@@ -100,6 +95,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     return mapVertxFuture(getCredentialsJson(okapiData)).whenComplete(this::logCredentialsRetrievalResult);
   }
 
+  private <T> CompletableFuture<T> mapVertxFuture(Future<T> future) {
+    CompletableFuture<T> completableFuture = new CompletableFuture<>();
+
+    future
+      .map(completableFuture::complete)
+      .otherwise(completableFuture::completeExceptionally);
+
+    return completableFuture;
+  }
+
   private void logCredentialsRetrievalResult(JsonObject creds, Throwable t) {
     if (t != null) {
       LOG.info("Failed to retrieve user credentials: " + t);
@@ -107,7 +112,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
       CredentialsReader reader = CredentialsReader.from(creds);
 
       LOG.info("User credentials retrieved: id = '" + reader.getId() + "', " +
-        "name = '" + reader.getName() + "'");
+               "name = '" + reader.getName() + "'");
     }
   }
 
@@ -115,16 +120,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     Promise<HttpResponse<Buffer>> promise = Promise.promise();
 
     client.get(okapiData.getOkapiPort(), okapiData.getOkapiHost(), USER_CREDS_URL)
-      .putHeader(OKAPI_HEADER_TENANT, TenantTool.calculateTenantId(okapiData.getTenant()))
-      .putHeader(OKAPI_HEADER_TOKEN, okapiData.getApiToken())
-      .putHeader(ACCEPT, JSON_API_TYPE)
+      .putHeader(XOkapiHeaders.TENANT, okapiData.getTenant())
+      .putHeader(XOkapiHeaders.TOKEN, okapiData.getApiToken())
+      .putHeader(XOkapiHeaders.USER_ID, okapiData.getUserId())
+      .putHeader(HttpHeaders.ACCEPT.toString(), JSON_API_TYPE)
       .expect(ResponsePredicate.contentType(JSON_API_TYPE))
       .send(promise);
 
     return promise.future().compose(res ->
-      res.statusCode() == HttpStatus.SC_OK
-        ? succeededFuture(res.bodyAsJsonObject())
-        : failedFuture(new ConfigurationServiceException(res.bodyAsString(), res.statusCode())));
+      res.statusCode() == HttpResponseStatus.OK.code()
+      ? succeededFuture(res.bodyAsJsonObject())
+      : failedFuture(new ConfigurationServiceException(res.bodyAsString(), res.statusCode())));
   }
 
   private Configuration credentialsToConfiguration(JsonObject creds) {

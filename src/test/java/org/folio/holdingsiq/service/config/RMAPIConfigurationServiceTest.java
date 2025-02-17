@@ -1,9 +1,10 @@
 package org.folio.holdingsiq.service.config;
 
 import static io.vertx.core.Future.succeededFuture;
-import static org.apache.http.HttpHeaders.ACCEPT;
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
-import static org.apache.http.HttpStatus.SC_OK;
+import static io.vertx.core.http.HttpHeaders.*;
+import static org.apache.hc.core5.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
+import static org.apache.hc.core5.http.HttpStatus.SC_OK;
+import static org.folio.holdingsiq.service.config.ConfigTestData.OKAPI_DATA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -15,13 +16,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-import static org.folio.holdingsiq.service.config.ConfigTestData.OKAPI_DATA;
-import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
-import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -30,15 +24,17 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.StringUtils;
+import org.folio.holdingsiq.model.Configuration;
+import org.folio.holdingsiq.service.impl.ConfigurationServiceImpl;
+import org.folio.okapi.common.XOkapiHeaders;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import org.folio.holdingsiq.model.Configuration;
-import org.folio.holdingsiq.service.impl.ConfigurationServiceImpl;
 
 public class RMAPIConfigurationServiceTest {
 
@@ -135,18 +131,20 @@ public class RMAPIConfigurationServiceTest {
 
   private void verifyCredentialsRequest() {
     verify(webClient).get(OKAPI_DATA.getOkapiPort(), OKAPI_DATA.getOkapiHost(), USER_CREDS_URL);
-    verify(httpRequest).putHeader(OKAPI_HEADER_TENANT, OKAPI_DATA.getTenant());
-    verify(httpRequest).putHeader(OKAPI_HEADER_TOKEN, OKAPI_DATA.getApiToken());
-    verify(httpRequest).putHeader(ACCEPT, JSON_API_TYPE);
+    verify(httpRequest).putHeader(XOkapiHeaders.TENANT, OKAPI_DATA.getTenant());
+    verify(httpRequest).putHeader(XOkapiHeaders.TOKEN, OKAPI_DATA.getApiToken());
+    verify(httpRequest).putHeader(XOkapiHeaders.USER_ID, OKAPI_DATA.getUserId());
+    verify(httpRequest).putHeader(ACCEPT.toString(), JSON_API_TYPE);
     verify(httpRequest).send(any());
   }
 
   private void mockCredentialsRequest() {
     when(webClient.get(OKAPI_DATA.getOkapiPort(), OKAPI_DATA.getOkapiHost(), USER_CREDS_URL)).thenReturn(httpRequest);
 
-    when(httpRequest.putHeader(OKAPI_HEADER_TENANT, OKAPI_DATA.getTenant())).thenReturn(httpRequest);
-    when(httpRequest.putHeader(OKAPI_HEADER_TOKEN, OKAPI_DATA.getApiToken())).thenReturn(httpRequest);
-    when(httpRequest.putHeader(ACCEPT, JSON_API_TYPE)).thenReturn(httpRequest);
+    when(httpRequest.putHeader(XOkapiHeaders.TENANT, OKAPI_DATA.getTenant())).thenReturn(httpRequest);
+    when(httpRequest.putHeader(XOkapiHeaders.TOKEN, OKAPI_DATA.getApiToken())).thenReturn(httpRequest);
+    when(httpRequest.putHeader(XOkapiHeaders.USER_ID, OKAPI_DATA.getUserId())).thenReturn(httpRequest);
+    when(httpRequest.putHeader(ACCEPT.toString(), JSON_API_TYPE)).thenReturn(httpRequest);
     when(httpRequest.expect(any())).thenReturn(httpRequest);
     doAnswer(httpResponseAnswer(httpResponse)).when(httpRequest).send(any());
   }
@@ -161,12 +159,12 @@ public class RMAPIConfigurationServiceTest {
 
     private final JsonObject creds;
 
-    static CredentialsBuilder instance() {
-      return new CredentialsBuilder();
-    }
-
     private CredentialsBuilder() {
       creds = new JsonObject();
+    }
+
+    static CredentialsBuilder instance() {
+      return new CredentialsBuilder();
     }
 
     CredentialsBuilder id(String id) {

@@ -14,7 +14,7 @@ import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import io.vertx.core.Vertx;
 import lombok.SneakyThrows;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.folio.holdingsiq.model.ResourceSelectedPayload;
 import org.folio.holdingsiq.service.ResourcesHoldingsIQService;
 import org.junit.Before;

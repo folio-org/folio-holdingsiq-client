@@ -15,7 +15,6 @@ import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
 import org.folio.holdingsiq.model.OkapiData;
 import org.folio.holdingsiq.service.ConfigurationService;
-import org.folio.util.TokenUtils;
 
 public class ConfigurationServiceCache implements ConfigurationService {
 
@@ -32,11 +31,9 @@ public class ConfigurationServiceCache implements ConfigurationService {
 
   @Override
   public CompletableFuture<Configuration> retrieveConfiguration(OkapiData okapiData) {
-    return TokenUtils.fetchUserInfo(okapiData.getApiToken())
-      .thenCompose(userInfo -> configurationCache.getValueOrLoad(
-          userInfo.getUserId(),
-          () -> configurationService.retrieveConfiguration(okapiData))
-      );
+    return configurationCache.getValueOrLoad(
+      okapiData.getUserId(),
+      () -> configurationService.retrieveConfiguration(okapiData));
   }
 
   @Override
@@ -59,11 +56,12 @@ public class ConfigurationServiceCache implements ConfigurationService {
   }
 
   private CompletableFuture<Void> storeConfigurationInCache(Configuration config, OkapiData okapiData) {
-    return TokenUtils.fetchUserInfo(okapiData.getApiToken())
-      .thenAccept(userInfo -> configurationCache.putValue(
-          userInfo.getUserId(),
-          config.toBuilder().configValid(true).build())
-      );
+    if (okapiData.getUserId() == null || okapiData.getUserId().isEmpty()) {
+      return CompletableFuture.failedFuture(new IllegalArgumentException("User id is empty"));
+    }
+
+    configurationCache.putValue(okapiData.getUserId(), config.toBuilder().configValid(true).build());
+    return CompletableFuture.completedFuture(null);
   }
 
 }

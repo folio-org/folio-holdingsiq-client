@@ -2,10 +2,12 @@ package org.folio.holdingsiq.service.impl;
 
 import static java.lang.String.format;
 
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
@@ -26,10 +28,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import javax.ws.rs.core.HttpHeaders;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.http.entity.ContentType;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.service.exception.ResourceNotFoundException;
 import org.folio.holdingsiq.service.exception.ResultsProcessingException;
@@ -185,8 +185,8 @@ class HoldingsRequestHelper {
 
   private HttpRequest<Buffer> addHeaders(HttpRequest<Buffer> request) {
     return request
-      .putHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
-      .putHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
+      .putHeader(HttpHeaders.ACCEPT.toString(), HttpHeaderValues.APPLICATION_JSON.toString())
+      .putHeader(HttpHeaders.CONTENT_TYPE.toString(), HttpHeaderValues.APPLICATION_JSON.toString())
       .putHeader(RMAPI_API_KEY_HEADER, apiKey);
   }
 
