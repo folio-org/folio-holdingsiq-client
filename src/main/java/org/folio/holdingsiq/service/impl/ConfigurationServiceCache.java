@@ -10,12 +10,14 @@ import java.util.concurrent.CompletableFuture;
 
 import io.vertx.core.Context;
 
+import lombok.extern.log4j.Log4j2;
 import org.folio.cache.VertxCache;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
 import org.folio.holdingsiq.model.OkapiData;
 import org.folio.holdingsiq.service.ConfigurationService;
 
+@Log4j2
 public class ConfigurationServiceCache implements ConfigurationService {
 
   private final ConfigurationService configurationService;
@@ -57,6 +59,7 @@ public class ConfigurationServiceCache implements ConfigurationService {
 
   private CompletableFuture<Void> storeConfigurationInCache(Configuration config, OkapiData okapiData) {
     if (okapiData.getUserId() == null || okapiData.getUserId().isEmpty()) {
+      log.warn("storeConfigurationInCache:: User id is empty");
       return CompletableFuture.failedFuture(new IllegalArgumentException("User id is empty"));
     }
 

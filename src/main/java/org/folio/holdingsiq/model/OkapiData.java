@@ -21,15 +21,15 @@ public class OkapiData {
 
   public OkapiData(Map<String, String> headers) {
     this.headers = new CaseInsensitiveMap<>(headers);
+    this.apiToken = this.headers.get(XOkapiHeaders.TOKEN);
+    this.tenant = this.headers.get(XOkapiHeaders.TENANT);
+    this.userId = this.headers.get(XOkapiHeaders.USER_ID);
+    this.okapiUrl = this.headers.get(XOkapiHeaders.URL);
 
     try {
-      apiToken = this.headers.get(XOkapiHeaders.TOKEN);
-      tenant = this.headers.get(XOkapiHeaders.TENANT);
-      userId = this.headers.get(XOkapiHeaders.USER_ID);
-      okapiUrl = this.headers.get(XOkapiHeaders.URL);
-      URL url = new URL(okapiUrl);
-      okapiHost = url.getHost();
-      okapiPort = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
+      var url = new URL(okapiUrl);
+      this.okapiHost = url.getHost();
+      this.okapiPort = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
     } catch (MalformedURLException e) {
       throw new IllegalArgumentException("Okapi url header does not contain valid url", e);
     }
