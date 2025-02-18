@@ -10,13 +10,14 @@ import java.util.concurrent.CompletableFuture;
 
 import io.vertx.core.Context;
 
+import lombok.extern.log4j.Log4j2;
 import org.folio.cache.VertxCache;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
 import org.folio.holdingsiq.model.OkapiData;
 import org.folio.holdingsiq.service.ConfigurationService;
-import org.folio.util.TokenUtils;
 
+@Log4j2
 public class ConfigurationServiceCache implements ConfigurationService {
 
   private final ConfigurationService configurationService;
@@ -32,11 +33,9 @@ public class ConfigurationServiceCache implements ConfigurationService {
 
   @Override
   public CompletableFuture<Configuration> retrieveConfiguration(OkapiData okapiData) {
-    return TokenUtils.fetchUserInfo(okapiData.getApiToken())
-      .thenCompose(userInfo -> configurationCache.getValueOrLoad(
-          userInfo.getUserId(),
-          () -> configurationService.retrieveConfiguration(okapiData))
-      );
+    return configurationCache.getValueOrLoad(
+      okapiData.getUserId(),
+      () -> configurationService.retrieveConfiguration(okapiData));
   }
 
   @Override
@@ -59,11 +58,13 @@ public class ConfigurationServiceCache implements ConfigurationService {
   }
 
   private CompletableFuture<Void> storeConfigurationInCache(Configuration config, OkapiData okapiData) {
-    return TokenUtils.fetchUserInfo(okapiData.getApiToken())
-      .thenAccept(userInfo -> configurationCache.putValue(
-          userInfo.getUserId(),
-          config.toBuilder().configValid(true).build())
-      );
+    if (okapiData.getUserId() == null || okapiData.getUserId().isEmpty()) {
+      log.warn("storeConfigurationInCache:: User id is empty");
+      return CompletableFuture.failedFuture(new IllegalArgumentException("User id is empty"));
+    }
+
+    configurationCache.putValue(okapiData.getUserId(), config.toBuilder().configValid(true).build());
+    return CompletableFuture.completedFuture(null);
   }
 
 }
