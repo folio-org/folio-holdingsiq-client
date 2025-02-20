@@ -1,9 +1,9 @@
 package org.folio.holdingsiq.model;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
-
 import lombok.Getter;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.folio.okapi.common.XOkapiHeaders;
@@ -27,10 +27,10 @@ public class OkapiData {
     this.okapiUrl = this.headers.get(XOkapiHeaders.URL);
 
     try {
-      var url = new URL(okapiUrl);
+      var url = new URI(okapiUrl).toURL();
       this.okapiHost = url.getHost();
       this.okapiPort = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
-    } catch (MalformedURLException e) {
+    } catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {
       throw new IllegalArgumentException("Okapi url header does not contain valid url", e);
     }
   }

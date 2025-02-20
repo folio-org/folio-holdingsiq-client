@@ -1,14 +1,12 @@
 package org.folio.holdingsiq.service.impl.urlbuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.folio.holdingsiq.model.FilterQuery;
 import org.folio.holdingsiq.model.Sort;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.apache.commons.lang3.StringUtils.defaultString;
 
 public class TitlesFilterableUrlBuilder {
 
@@ -81,9 +79,9 @@ public class TitlesFilterableUrlBuilder {
 
     List<String> parameters = new ArrayList<>();
     parameters.add("searchfield=" + searchField);
-    parameters.add("selection=" + defaultString(filterQuery.getSelected(), DEFAULT_SELECTION));
-    parameters.add("resourcetype=" + defaultString(filterQuery.getType(), DEFAULT_RESOURCE_TYPE));
-    parameters.add("searchtype=" + defaultString(searchType, DEFAULT_SEARCH_TYPE));
+    parameters.add("selection=" + Objects.toString(filterQuery.getSelected(), DEFAULT_SELECTION));
+    parameters.add("resourcetype=" + Objects.toString(filterQuery.getType(), DEFAULT_RESOURCE_TYPE));
+    parameters.add("searchtype=" + Objects.toString(searchType, DEFAULT_SEARCH_TYPE));
     addPackageIdsFilter(parameters);
     parameters.add(query);
 

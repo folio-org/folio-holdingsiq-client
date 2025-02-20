@@ -1,3 +1,7 @@
+## v4.0.0 In Progress
+### Breaking changes
+* Update module to Java 21 & the latest dependencies ([FHIQC-40](https://issues.folio.org/browse/FHIQC-40))
+
 ## v3.2.0 2024-10-29
 ### Dependencies
 * Bump `folio-service-tools` from `4.0.0` to `4.1.0`

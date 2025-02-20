@@ -1,16 +1,17 @@
 package org.folio.holdingsiq.model;
 
-public enum Sort {
-  RELEVANCE("relevance"), NAME("name");
+import lombok.Getter;
 
-  private String value;
+@Getter
+public enum Sort {
+
+  RELEVANCE("relevance"),
+  NAME("name");
+
+  private final String value;
 
   Sort(String value) {
     this.value = value;
-  }
-
-  public String getValue() {
-    return value;
   }
 
   public static boolean contains(String value) {

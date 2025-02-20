@@ -4,9 +4,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-
 import org.folio.holdingsiq.model.Sort;
 
 public class QueryableUrlBuilder {
@@ -60,15 +58,12 @@ public class QueryableUrlBuilder {
   }
 
   private String determineSortValue(Sort sort, String query) {
-    if (query == null)
+    if (query == null) {
       return nameParameter;
-    switch (sort) {
-      case RELEVANCE:
-        return RELEVANCE_PARAMETER;
-      case NAME:
-        return nameParameter;
-      default:
-        throw new IllegalArgumentException("Invalid value for sort - " + sort);
     }
+    return switch (sort) {
+      case RELEVANCE -> RELEVANCE_PARAMETER;
+      case NAME -> nameParameter;
+    };
   }
 }
