@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public class ResourcesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
 
-  private final static String URL = "/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" +
+  private static final String URL = "/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" +
     VENDOR_ID + "/packages/" + PACKAGE_ID + "/titles/" + TITLE_ID;
   private ResourcesHoldingsIQService service;
 
@@ -61,7 +61,7 @@ public class ResourcesHoldingsIQServiceImplTest extends HoldingsIQServiceTestCon
 
     var completableFuture = service.retrieveResource(resourceId);
     assertTrue(isCompletedNormally(completableFuture));
-    assertNotNull(completableFuture.get().getCustomerResourcesList().get(0).getProxy().getProxiedUrl());
+    assertNotNull(completableFuture.get().getCustomerResourcesList().getFirst().getProxy().getProxiedUrl());
     WireMock.verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
   }
 

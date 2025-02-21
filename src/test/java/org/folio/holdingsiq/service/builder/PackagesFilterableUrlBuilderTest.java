@@ -19,7 +19,7 @@ public class PackagesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlWithFilterSelectedDefault() {
+  public void shouldBuildUrlWithFilterSelectedAndTypeDefault() {
     String url = new PackagesFilterableUrlBuilder()
       .sort(Sort.NAME)
       .build();
@@ -42,14 +42,6 @@ public class PackagesFilterableUrlBuilderTest {
       .sort(Sort.NAME)
       .build();
     assertEquals("selection=all&contenttype=abstractandindex&searchtype=advanced&search=&offset=1&count=25&orderby=packagename", url);
-  }
-
-  @Test
-  public void shouldBuildUrlWithFilterTypeDefault() {
-    String url = new PackagesFilterableUrlBuilder()
-      .sort(Sort.NAME)
-      .build();
-    assertEquals("selection=all&contenttype=all&searchtype=advanced&search=&offset=1&count=25&orderby=packagename", url);
   }
 
   @Test

@@ -82,9 +82,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
   private boolean isInvalidConfigurationException(Throwable exception) {
     Throwable cause = exception.getCause();
-    return cause instanceof UnknownHostException || (cause instanceof ServiceResponseException
-                                                     && isInvalidConfigurationStatusCode(
-      ((ServiceResponseException) cause).getCode()));
+    return cause instanceof UnknownHostException || (cause instanceof ServiceResponseException responseException
+                                                     && isInvalidConfigurationStatusCode(responseException.getCode()));
   }
 
   private boolean isInvalidConfigurationStatusCode(Integer statusCode) {
@@ -107,12 +106,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
   private void logCredentialsRetrievalResult(JsonObject creds, Throwable t) {
     if (t != null) {
-      LOG.info("Failed to retrieve user credentials: " + t);
+      LOG.info("Failed to retrieve user credentials: {}", t.getMessage());
     } else {
-      CredentialsReader reader = CredentialsReader.from(creds);
-
-      LOG.info("User credentials retrieved: id = '" + reader.getId() + "', " +
-               "name = '" + reader.getName() + "'");
+      var reader = CredentialsReader.from(creds);
+      LOG.info("User credentials retrieved: id = '{}', name = '{}'", reader.getId(), reader.getName());
     }
   }
 

@@ -1,9 +1,7 @@
 package org.folio.holdingsiq.service.impl;
 
-import java.util.concurrent.CompletableFuture;
-
 import io.vertx.core.Vertx;
-
+import java.util.concurrent.CompletableFuture;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.DeltaReport;
 import org.folio.holdingsiq.model.DeltaReportParams;
@@ -26,55 +24,62 @@ public class LoadServiceImpl implements LoadService {
   @Override
   public CompletableFuture<Void> populateHoldings() {
     return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL("holdings"), String.class)
-      .thenAccept(response -> {});
+      .thenAccept(response -> { });
   }
 
   @Override
   public CompletableFuture<Void> populateHoldingsForce() {
     return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL("holdings?force=true"), String.class)
-      .thenAccept(response -> {});
+      .thenAccept(response -> { });
   }
 
   @Override
   public CompletableFuture<TransactionId> populateHoldingsTransaction() {
-    return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL("reports/holdings?format=kbart2"), TransactionId.class);
+    return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL("reports/holdings?format=kbart2"),
+      TransactionId.class);
   }
 
   @Override
   public CompletableFuture<HoldingsLoadStatus> getLoadingStatus() {
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL("holdings/status"), HoldingsLoadStatus.class);
+    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL("holdings/status"),
+      HoldingsLoadStatus.class);
   }
 
   @Override
   public CompletableFuture<HoldingsLoadTransactionStatus> getTransactionStatus(String transactionId) {
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL("reports/holdings/transactions/"+transactionId+"/status"), HoldingsLoadTransactionStatus.class);
+    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(
+      "reports/holdings/transactions/%s/status".formatted(transactionId)), HoldingsLoadTransactionStatus.class);
   }
 
   @Override
   public CompletableFuture<HoldingsTransactionIdsList> getTransactions() {
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL("reports/holdings/transactions"), HoldingsTransactionIdsList.class);
+    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL("reports/holdings/transactions"),
+      HoldingsTransactionIdsList.class);
   }
 
   @Override
   public CompletableFuture<Holdings> loadHoldings(int count, int offset) {
-    String path = "holdings?format=kbart2&count=" + count + "&offset=" + offset;
+    String path = "holdings?format=kbart2&count=%d&offset=%d".formatted(count, offset);
     return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), Holdings.class);
   }
+
   @Override
   public CompletableFuture<Holdings> loadHoldingsTransaction(String transactionId, int count, int offset) {
-    String path = "reports/holdings/transactions/"+transactionId+"?format=kbart2&count=" + count + "&offset=" + offset;
+    String path = "reports/holdings/transactions/%s?format=kbart2&count=%d&offset=%d"
+      .formatted(transactionId, count, offset);
     return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), Holdings.class);
   }
 
   @Override
   public CompletableFuture<DeltaReport> loadDeltaReport(String deltaReportId, int count, int offset) {
-    String path = "reports/holdings/deltas/"+ deltaReportId +"?format=kbart2&count=" + count + "&offset=" + offset;
+    String path = "reports/holdings/deltas/%s?format=kbart2&count=%d&offset=%d".formatted(deltaReportId, count, offset);
     return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), DeltaReport.class);
   }
 
   @Override
   public CompletableFuture<DeltaReportStatus> getDeltaReportStatus(String deltaReportId) {
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL("reports/holdings/deltas/"+deltaReportId+"/status"), DeltaReportStatus.class);
+    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(
+      "reports/holdings/deltas/%s/status".formatted(deltaReportId)), DeltaReportStatus.class);
   }
 
   @Override
@@ -82,7 +87,8 @@ public class LoadServiceImpl implements LoadService {
     DeltaReportParams postData = DeltaReportParams.builder()
       .currentSnapshotId(currentSnapshotId)
       .previousSnapshotId(previousSnapshotId).build();
-    return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL("reports/holdings/deltas"), postData,  String.class);
+    return holdingsRequestHelper.postRequest(holdingsRequestHelper
+      .constructURL("reports/holdings/deltas"), postData, String.class);
   }
 
 }

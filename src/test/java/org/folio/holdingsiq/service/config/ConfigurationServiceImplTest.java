@@ -68,7 +68,7 @@ public class ConfigurationServiceImplTest extends HoldingsIQServiceTestConfig {
     assertTrue(isCompletedNormally(completableFuture));
     List<ConfigurationError> configurationErrors = completableFuture.get();
     assertThat(configurationErrors, hasSize(1));
-    assertThat(configurationErrors.get(0), instanceOf(ConfigurationError.class));
+    assertThat(configurationErrors.getFirst(), instanceOf(ConfigurationError.class));
   }
 
   @Test
@@ -84,22 +84,23 @@ public class ConfigurationServiceImplTest extends HoldingsIQServiceTestConfig {
     assertTrue(isCompletedNormally(completableFuture));
     List<ConfigurationError> configurationErrors = completableFuture.get();
     assertThat(configurationErrors, hasSize(1));
-    assertThat(configurationErrors.get(0), instanceOf(ConfigurationError.class));
+    assertThat(configurationErrors.getFirst(), instanceOf(ConfigurationError.class));
   }
 
   @Test
   public void shouldFailedOnVerifyWhenCredentialsAreValidWithCode429() {
     var urlPattern = new UrlPattern(WireMock.equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/"), false);
     wiremockServer.stubFor(
-      get(urlPattern).willReturn(aResponse().withStatus(429).withBody("{\n"
-        + "  \"Errors\": [\n"
-        + "    {\n"
-        + "      \"Code\": 1010,\n"
-        + "      \"Message\": \"Too Many Requests.\",\n"
-        + "      \"SubCode\": 0\n"
-        + "    }\n"
-        + "  ]\n"
-        + "}"))
+      get(urlPattern).willReturn(aResponse().withStatus(429).withBody("""
+        {
+          "Errors": [
+            {
+              "Code": 1010,
+              "Message": "Too Many Requests.",
+              "SubCode": 0
+            }
+          ]
+        }"""))
     );
 
     var completableFuture = configService.verifyCredentials(getConfiguration(), context, OKAPI_DATA);

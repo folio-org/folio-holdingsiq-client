@@ -125,7 +125,7 @@ public class ConfigurationServiceCacheTest {
     List<ConfigurationError> errors = cacheService.verifyCredentials(STUB_CONFIGURATION, context, okapiData).get();
 
     assertThat(errors, hasSize(1));
-    assertThat(errors.get(0).getMessage(), containsString("User id is empty"));
+    assertThat(errors.getFirst().getMessage(), containsString("User id is empty"));
     assertThat(testCache.getValue(USER_ID), nullValue());
 
     verify(configService).verifyCredentials(STUB_CONFIGURATION, context, okapiData);
