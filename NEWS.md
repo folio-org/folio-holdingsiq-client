@@ -1,6 +1,7 @@
-## v4.0.0 In Progress
+## v4.0.0 2025-02-28
 ### Breaking changes
 * Update module to Java 21 & the latest dependencies ([FHIQC-40](https://issues.folio.org/browse/FHIQC-40))
+* Use x-okapi-user-id header instead JWT token parsing ([FHIQC-41](https://issues.folio.org/browse/FHIQC-41))
 
 ## v3.2.0 2024-10-29
 ### Dependencies
