@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.folio</groupId>
   <artifactId>folio-holdingsiq-client</artifactId>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>folio-holdingsiq-client</name>
@@ -19,14 +19,14 @@
   </licenses>
 
   <properties>
-    <vertx.version>4.5.12</vertx.version>
+    <vertx.version>4.5.13</vertx.version>
     <lombok.version>1.18.36</lombok.version>
     <jackson.version>2.18.2</jackson.version>
     <commons-validator.version>1.9.0</commons-validator.version>
     <log4j.version>2.24.3</log4j.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
-    <okapi-common.version>6.1.3</okapi-common.version>
+    <okapi-common.version>6.2.0</okapi-common.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -35,11 +35,11 @@
     <junit.version>4.13.2</junit.version>
     <mockito.version>5.15.2</mockito.version>
     <wiremock.version>3.12.0</wiremock.version>
-    <awaitility.version>4.2.2</awaitility.version>
+    <awaitility.version>4.3.0</awaitility.version>
 
     <!-- Plugin versions   -->
     <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
-    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>

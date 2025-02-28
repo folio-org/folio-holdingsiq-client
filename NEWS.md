@@ -1,6 +1,23 @@
-## v4.0.0 In Progress
+## v4.1.0 IN PROGRESS
+
+---
+
+## v4.0.0 2025-02-28
 ### Breaking changes
 * Update module to Java 21 & the latest dependencies ([FHIQC-40](https://issues.folio.org/browse/FHIQC-40))
+* Use x-okapi-user-id header instead JWT token parsing ([FHIQC-41](https://issues.folio.org/browse/FHIQC-41))
+
+### Dependencies
+* Bump `java` from `17` to `21`
+* Bump `vertx` from `4.5.10` to `4.5.13`
+* Bump `lombok` from `1.18.34` to `1.18.36`
+* Bump `jackson` from `2.17.1` to `2.18.2`
+* Bump `log4j` from `2.24.1` to `2.24.3`
+* Add `commons-collections4` version `4.4`
+* Add `commons-lang3` version `3.17.0`
+* Add `okapi-common` version `6.2.0`
+* Removed `folio-service-tools`
+---
 
 ## v3.2.0 2024-10-29
 ### Dependencies
