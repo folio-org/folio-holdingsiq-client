@@ -58,7 +58,6 @@ class HoldingsRequestHelper {
   private final Vertx vertx;
   private final List<HoldingsResponseBodyListener> bodyListeners;
 
-
   HoldingsRequestHelper(Configuration config, Vertx vertx) {
     this.customerId = config.getCustomerId();
     this.apiKey = config.getApiKey();
@@ -71,8 +70,8 @@ class HoldingsRequestHelper {
     var client = WebClientHolder.getClient(vertx);
 
     var request = addHeaders(client.getAbs(query))
-        .expect(ResponsePredicate.create(ResponsePredicate.SC_OK, errorConverter(query)))
-        .as(getResponseCodec(clazz));
+      .expect(ResponsePredicate.create(ResponsePredicate.SC_OK, errorConverter(query)))
+      .as(getResponseCodec(clazz));
 
     return sendHttpRequest(request, HttpRequest::send);
   }
@@ -117,7 +116,7 @@ class HoldingsRequestHelper {
   String constructURL(String path) {
     String fullPath = format("%s/rm/rmaccounts/%s/%s", baseURI, customerId, path);
 
-    log.info("constructurl - path=" + fullPath);
+    log.debug("constructurl - path={}", fullPath);
     return fullPath;
   }
 
@@ -126,7 +125,7 @@ class HoldingsRequestHelper {
       int sc = ctx.statusCode();
 
       if (sc == 200 || sc == 201 || sc == 202 || sc == 204) {
-        log.info("[OK] RMAPI Service response: query = [{}], statusCode = [{}], body = [{}]", ctx.uri(), sc, body);
+        log.debug("[OK] RMAPI Service response: query = [{}], statusCode = [{}]", ctx.uri(), sc);
       }
     };
   }
@@ -141,7 +140,8 @@ class HoldingsRequestHelper {
         try {
           return Json.decodeValue(buffer, clazz);
         } catch (Exception e) {
-          log.error("{} - Response = [{}] Target Type = [{}] Cause: [{}]", JSON_RESPONSE_ERROR, buffer.toString(), clazz,
+          log.error("{} - Response = [{}] Target Type = [{}] Cause: [{}]", JSON_RESPONSE_ERROR, buffer.toString(),
+            clazz,
             e.getMessage());
           throw new ResultsProcessingException(JSON_RESPONSE_ERROR, e);
         }
@@ -167,14 +167,16 @@ class HoldingsRequestHelper {
         var message = format("Unauthorized Access to %s", query);
         return new UnAuthorizedException(message, statusCode, statusMessage, msgBody, query);
       } else {
-        var message = format("%s Code = %s Message = %s Body = %s", INVALID_RMAPI_RESPONSE, statusCode, statusMessage, body);
+        var message =
+          format("%s Code = %s Message = %s Body = %s", INVALID_RMAPI_RESPONSE, statusCode, statusMessage, body);
         return new ServiceResponseException(message, statusCode, statusMessage, msgBody, query);
       }
     });
   }
 
   private String mapVendorToProvider(String msgBody) {
-    return msgBody.replace(VENDOR_LOWER_STRING, PROVIDER_LOWER_STRING).replace(VENDOR_UPPER_STRING, PROVIDER_UPPER_STRING);
+    return msgBody.replace(VENDOR_LOWER_STRING, PROVIDER_LOWER_STRING)
+      .replace(VENDOR_UPPER_STRING, PROVIDER_UPPER_STRING);
   }
 
   private <T> void fireBodyReceived(T body, HoldingsInteractionContext context) {
@@ -191,20 +193,20 @@ class HoldingsRequestHelper {
   }
 
   private <T> CompletableFuture<T> sendHttpRequest(HttpRequest<T> request,
-      Function<HttpRequest<T>, Future<HttpResponse<T>>> sendMethod) {
+                                                   Function<HttpRequest<T>, Future<HttpResponse<T>>> sendMethod) {
 
     CompletableFuture<T> result = new CompletableFuture<>();
 
     Future<HttpResponse<T>> response = sendMethod.apply(request);
 
     response
-        .onSuccess(res -> {
-          T body = res.body();
-          fireBodyReceived(body, new HoldingsInteractionContext(request, res));
+      .onSuccess(res -> {
+        T body = res.body();
+        fireBodyReceived(body, new HoldingsInteractionContext(request, res));
 
-          result.complete(res.body());
-        })
-        .onFailure(result::completeExceptionally);
+        result.complete(res.body());
+      })
+      .onFailure(result::completeExceptionally);
 
     return result;
   }
@@ -213,8 +215,9 @@ class HoldingsRequestHelper {
     return response -> {
       var sc = response.statusCode();
       return ArrayUtils.contains(expectedStatuses, sc)
-        ? ResponsePredicateResult.success()
-        : ResponsePredicateResult.failure("Response status code " + sc + " is not in " + Arrays.toString(expectedStatuses));
+             ? ResponsePredicateResult.success()
+             : ResponsePredicateResult.failure(
+               "Response status code " + sc + " is not in " + Arrays.toString(expectedStatuses));
     };
   }
 
@@ -224,7 +227,6 @@ class HoldingsRequestHelper {
     private static final Map<Vertx, WebClientHolder> webClients = new ConcurrentHashMap<>();
 
     private final WebClient webClient;
-
 
     WebClientHolder(WebClient wc) {
       this.webClient = wc;
@@ -239,18 +241,18 @@ class HoldingsRequestHelper {
       }).getWebClient();
     }
 
+    WebClient getWebClient() {
+      return webClient;
+    }
+
     private static WebClient createWebClient(Vertx vtx) {
       WebClientOptions options = new WebClientOptions();
       options.setMaxPoolSize(20); // override the default of 5 HTTP/1 connections
       options.setHttp2MaxPoolSize(3); // override the default of 1 HTTP/2 connections
 
       var webClient = WebClient.create(vtx, options);
-      log.info("Web client instance created to serve requests to HoldingsIQ: {}", webClient);
+      log.info("Web client instance created to serve requests to HoldingsIQ");
 
-      return webClient;
-    }
-
-    WebClient getWebClient() {
       return webClient;
     }
 
@@ -261,11 +263,11 @@ class HoldingsRequestHelper {
 
           String uri = request.uri();
 
-          log.info("RMAPI Service absolute URL is: {}", uri);
+          log.debug("RMAPI Service absolute URL is: {}", uri);
 
           Object requestBody = httpContext.body();
           if (requestBody != null) {
-            log.info("RMAPI Service body is: {}", requestBody);
+            log.debug("RMAPI Service body is: {}", requestBody);
           }
         }
 
