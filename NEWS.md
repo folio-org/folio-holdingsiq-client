@@ -1,4 +1,6 @@
 ## v4.1.0 IN PROGRESS
+### Tech dept
+* Reduce log verbosity and remove sensitive RMAPI data exposure ([FHIQC-45](https://issues.folio.org/browse/FHIQC-45))
 
 ---
 
