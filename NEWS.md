@@ -1,6 +1,12 @@
-## v4.1.0 IN PROGRESS
+## v5.0.0 IN PROGRESS
+### Breaking changes
+* Upgrade the module for Vert.X 5.0.x ([FHIQC-48](https://issues.folio.org/browse/FHIQC-48))
+
 ### Tech dept
 * Reduce log verbosity and remove sensitive RMAPI data exposure ([FHIQC-45](https://issues.folio.org/browse/FHIQC-45))
+
+### Dependencies
+* Bump `vertx` from `4.5.13` to `5.0.5`
 
 ---
 
