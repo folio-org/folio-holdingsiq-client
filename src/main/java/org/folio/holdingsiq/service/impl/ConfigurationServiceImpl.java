@@ -1,7 +1,5 @@
 package org.folio.holdingsiq.service.impl;
 
-import static io.vertx.core.Future.failedFuture;
-import static io.vertx.core.Future.succeededFuture;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.validator.routines.UrlValidator.ALLOW_LOCAL_URLS;
@@ -9,14 +7,11 @@ import static org.apache.commons.validator.routines.UrlValidator.ALLOW_LOCAL_URL
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,20 +109,20 @@ public class ConfigurationServiceImpl implements ConfigurationService {
   }
 
   private Future<JsonObject> getCredentialsJson(OkapiData okapiData) {
-    Promise<HttpResponse<Buffer>> promise = Promise.promise();
-
-    client.get(okapiData.getOkapiPort(), okapiData.getOkapiHost(), USER_CREDS_URL)
+    return client.get(okapiData.getOkapiPort(), okapiData.getOkapiHost(), USER_CREDS_URL)
       .putHeader(XOkapiHeaders.TENANT, okapiData.getTenant())
       .putHeader(XOkapiHeaders.TOKEN, okapiData.getApiToken())
       .putHeader(XOkapiHeaders.USER_ID, okapiData.getUserId())
       .putHeader(HttpHeaders.ACCEPT.toString(), JSON_API_TYPE)
-      .expect(ResponsePredicate.contentType(JSON_API_TYPE))
-      .send(promise);
-
-    return promise.future().compose(res ->
-      res.statusCode() == HttpResponseStatus.OK.code()
-      ? succeededFuture(res.bodyAsJsonObject())
-      : failedFuture(new ConfigurationServiceException(res.bodyAsString(), res.statusCode())));
+      .send()
+      .expecting(HttpResponseExpectation.contentType(JSON_API_TYPE))
+      .map(res -> {
+        if (res.statusCode() == HttpResponseStatus.OK.code()) {
+          return res.bodyAsJsonObject();
+        } else {
+          throw new ConfigurationServiceException(res.bodyAsString(), res.statusCode());
+        }
+      });
   }
 
   private Configuration credentialsToConfiguration(JsonObject creds) {
@@ -201,5 +196,4 @@ public class ConfigurationServiceImpl implements ConfigurationService {
       return attrs.getString("customerId");
     }
   }
-
 }

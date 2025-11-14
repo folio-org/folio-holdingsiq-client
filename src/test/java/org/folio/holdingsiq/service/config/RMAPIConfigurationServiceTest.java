@@ -9,17 +9,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
@@ -33,8 +31,6 @@ import org.folio.okapi.common.XOkapiHeaders;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class RMAPIConfigurationServiceTest {
 
@@ -55,6 +51,8 @@ public class RMAPIConfigurationServiceTest {
   private HttpResponse<Buffer> httpResponse;
   @Mock
   private HttpRequest<Buffer> httpRequest;
+  @Mock
+  private MultiMap headers;
   private ConfigurationServiceImpl service;
 
   @Before
@@ -135,7 +133,7 @@ public class RMAPIConfigurationServiceTest {
     verify(httpRequest).putHeader(XOkapiHeaders.TOKEN, OKAPI_DATA.getApiToken());
     verify(httpRequest).putHeader(XOkapiHeaders.USER_ID, OKAPI_DATA.getUserId());
     verify(httpRequest).putHeader(ACCEPT.toString(), JSON_API_TYPE);
-    verify(httpRequest).send(any());
+    verify(httpRequest).send();
   }
 
   private void mockCredentialsRequest() {
@@ -145,14 +143,9 @@ public class RMAPIConfigurationServiceTest {
     when(httpRequest.putHeader(XOkapiHeaders.TOKEN, OKAPI_DATA.getApiToken())).thenReturn(httpRequest);
     when(httpRequest.putHeader(XOkapiHeaders.USER_ID, OKAPI_DATA.getUserId())).thenReturn(httpRequest);
     when(httpRequest.putHeader(ACCEPT.toString(), JSON_API_TYPE)).thenReturn(httpRequest);
-    when(httpRequest.expect(any())).thenReturn(httpRequest);
-    doAnswer(httpResponseAnswer(httpResponse)).when(httpRequest).send(any());
-  }
-
-  private static <T> HandlerAnswer<AsyncResult<HttpResponse<T>>, Void> httpResponseAnswer(
-    HttpResponse<T> httpResponse) {
-    AsyncResult<HttpResponse<T>> res = succeededFuture(httpResponse);
-    return new HandlerAnswer<>(res, 0);
+    when(httpResponse.headers()).thenReturn(headers);
+    when(headers.get(HttpHeaders.CONTENT_TYPE)).thenReturn(JSON_API_TYPE);
+    when(httpRequest.send()).thenReturn(succeededFuture(httpResponse));
   }
 
   private static class CredentialsBuilder {
@@ -220,30 +213,6 @@ public class RMAPIConfigurationServiceTest {
       }
 
       return attrs;
-    }
-  }
-
-  private static class HandlerAnswer<H, R> implements Answer<R> {
-
-    private final H handlerResult;
-    private final int argumentIndex;
-    private R returnResult;
-
-    public HandlerAnswer(H handlerResult, int handlerArgumentIndex) {
-      this.handlerResult = handlerResult;
-      this.argumentIndex = handlerArgumentIndex;
-    }
-
-    public HandlerAnswer(H handlerResult, int handlerArgumentIndex, R returnResult) {
-      this(handlerResult, handlerArgumentIndex);
-      this.returnResult = returnResult;
-    }
-
-    @Override
-    public R answer(InvocationOnMock invocation) {
-      Handler<H> handler = invocation.getArgument(argumentIndex);
-      handler.handle(handlerResult);
-      return returnResult;
     }
   }
 }
