@@ -34,7 +34,7 @@
     <!-- Test dependencies versions   -->
     <junit.version>4.13.2</junit.version>
     <mockito.version>5.20.0</mockito.version>
-    <wiremock.version>3.13.1</wiremock.version>
+    <wiremock.version>3.13.2</wiremock.version>
     <awaitility.version>4.3.0</awaitility.version>
 
     <!-- Plugin versions   -->
