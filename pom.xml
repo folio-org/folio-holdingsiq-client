@@ -23,7 +23,7 @@
     <lombok.version>1.18.42</lombok.version>
     <jackson.version>2.20.1</jackson.version>
     <commons-validator.version>1.10.1</commons-validator.version>
-    <log4j.version>2.25.2</log4j.version>
+    <log4j.version>2.25.3</log4j.version>
     <commons-collections4.version>4.5.0</commons-collections4.version>
     <commons-lang3.version>3.20.0</commons-lang3.version>
     <okapi-common.version>7.0.1</okapi-common.version>
