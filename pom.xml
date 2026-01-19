@@ -19,7 +19,7 @@
   </licenses>
 
   <properties>
-    <vertx.version>5.0.6</vertx.version>
+    <vertx.version>5.0.7</vertx.version>
     <lombok.version>1.18.42</lombok.version>
     <jackson.version>2.20.1</jackson.version>
     <commons-validator.version>1.10.1</commons-validator.version>
