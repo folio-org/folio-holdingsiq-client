@@ -4,6 +4,7 @@
 
 ### Tech dept
 * Reduce log verbosity and remove sensitive RMAPI data exposure ([FHIQC-45](https://issues.folio.org/browse/FHIQC-45))
+* Use GitHub workflow for CI/CD ([FHIQC-54](https://issues.folio.org/browse/FHIQC-54))
 
 ### Dependencies
 * Bump `vertx` from `4.5.13` to `5.0.5`
