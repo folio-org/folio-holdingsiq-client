@@ -1,4 +1,4 @@
-## v5.0.0 IN PROGRESS
+## v5.0.0 2026-04-15
 ### Breaking changes
 * Upgrade the module for Vert.X 5.0.x ([FHIQC-48](https://issues.folio.org/browse/FHIQC-48))
 
@@ -7,7 +7,20 @@
 * Use GitHub workflow for CI/CD ([FHIQC-54](https://issues.folio.org/browse/FHIQC-54))
 
 ### Dependencies
-* Bump `vertx` from `4.5.13` to `5.0.5`
+* Bump `vertx` from `4.5.13` to `5.0.10`
+* Bump `lombok` from `1.18.36` to `1.18.44`
+* Bump `jackson` from `2.18.2` to `2.21.2`
+* Bump `commons-validator` from `1.9.0` to `1.10.1`
+* Bump `log4j` from `2.24.3` to `2.25.4`
+* Bump `commons-collections4` from `4.4` to `4.5.0`
+* Bump `commons-lang3` from `3.17.0` to `3.20.0`
+* Bump `okapi-common` from `6.2.0` to `7.0.3`
+* Bump `mockito` from `5.15.2` to `5.23.0`
+* Bump `wiremock` from `3.12.0` to `3.13.2`
+* Remove `jackson-core` explicit dependency (managed via BOM)
+* Remove `vertx-codegen` dependency
+* Remove `vertx-web` dependency
+* Remove `vertx-unit` test dependency
 
 ---
 
