@@ -19,9 +19,9 @@
   </licenses>
 
   <properties>
-    <vertx.version>5.0.10</vertx.version>
-    <lombok.version>1.18.44</lombok.version>
-    <jackson.version>2.21.2</jackson.version>
+    <vertx.version>5.0.11</vertx.version>
+    <lombok.version>1.18.46</lombok.version>
+    <jackson.version>2.21.3</jackson.version>
     <commons-validator.version>1.10.1</commons-validator.version>
     <log4j.version>2.25.4</log4j.version>
     <commons-collections4.version>4.5.0</commons-collections4.version>
