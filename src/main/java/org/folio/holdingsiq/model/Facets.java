@@ -14,4 +14,7 @@ public class Facets {
 
   @JsonProperty("packages")
   private List<PackageFacet> packages;
+
+  @JsonProperty("subjects")
+  private List<SubjectFacet> subjects;
 }

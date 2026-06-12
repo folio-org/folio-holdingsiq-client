@@ -1,26 +1,24 @@
 package org.folio.holdingsiq.service;
 
 import java.util.concurrent.CompletableFuture;
-
-import org.folio.holdingsiq.model.PackageByIdData;
-import org.folio.holdingsiq.model.PackageId;
+import org.folio.holdingsiq.model.PackageData;
+import org.folio.holdingsiq.model.PackageFilter;
 import org.folio.holdingsiq.model.PackagePost;
 import org.folio.holdingsiq.model.PackagePut;
 import org.folio.holdingsiq.model.Packages;
-import org.folio.holdingsiq.model.Sort;
+import org.folio.holdingsiq.model.Pageable;
 
 public interface PackagesHoldingsIQService {
 
-  CompletableFuture<PackageByIdData> retrievePackage(PackageId packageId);
+  CompletableFuture<PackageData> retrievePackage(long packageId);
 
-  CompletableFuture<Packages> retrievePackages(Long providerId);
+  CompletableFuture<Packages> retrievePackages(PackageFilter packageFilter, Pageable pageable);
 
-  CompletableFuture<Packages> retrievePackages(String filterSelected, String filterType, String searchType, Long providerId,
-                                               String q, int page, int count, Sort sort);
+  CompletableFuture<Packages> retrievePackages(long providerId, PackageFilter packageFilter, Pageable pageable);
 
-  CompletableFuture<PackageByIdData> postPackage(PackagePost entity, Long vendorId);
+  CompletableFuture<PackageData> postPackage(PackagePost entity, long providerId);
 
-  CompletableFuture<Void> updatePackage(PackageId packageId, PackagePut packagePut);
+  CompletableFuture<Void> updatePackage(long packageId, PackagePut packagePut);
 
-  CompletableFuture<Void> deletePackage(PackageId packageId);
+  CompletableFuture<Void> deletePackage(long packageId);
 }

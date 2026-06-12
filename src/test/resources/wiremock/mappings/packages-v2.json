@@ -1,0 +1,52 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/rm/rmaccounts/v2/customer_id/lists/2222"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "package-2222.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/rm/rmaccounts/v2/customer_id/lists/2222"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/rm/rmaccounts/v2/customer_id/lists?selection=orderedthroughebsco&contenttype=all&searchtype=advanced&searchfield=name&search=Query&offset=1&count=5&orderby=packagename"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "packages-list.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/rm/rmaccounts/v2/customer_id/vendors/5555/lists?selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "packages-list.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

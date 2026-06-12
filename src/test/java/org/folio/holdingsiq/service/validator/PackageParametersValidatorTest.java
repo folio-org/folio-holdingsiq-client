@@ -1,35 +1,47 @@
 package org.folio.holdingsiq.service.validator;
 
-import org.folio.holdingsiq.service.exception.RequestValidationException;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PackageParametersValidatorTest {
+import org.folio.holdingsiq.service.exception.RequestValidationException;
+import org.junit.jupiter.api.Test;
+
+class PackageParametersValidatorTest {
 
   private final PackageParametersValidator validator = new PackageParametersValidator();
 
   @Test
-  public void shouldNotThrowExceptionWhenParametersAreValid() {
-    validator.validate(null, null, "relevance", "query");
+  void shouldNotThrowExceptionWhenParametersAreValid() {
+    validator.validate(null, null, "relevance", "query", "name");
   }
 
-  @Test(expected = RequestValidationException.class)
-  public void shouldThrowExceptionWhenFilterSelectedIsInvalid() {
-    validator.validate("notall", null, "relevance", "query");
+  @Test
+  void shouldThrowExceptionWhenFilterSelectedIsInvalid() {
+    assertThrows(RequestValidationException.class, () ->
+      validator.validate("notall", null, "relevance", "query", "name"));
   }
 
-  @Test(expected = RequestValidationException.class)
-  public void shouldThrowExceptionWhenFilterTypeIsInvalid() {
-    validator.validate("selected", "notall", "relevance", "query");
+  @Test
+  void shouldThrowExceptionWhenFilterTypeIsInvalid() {
+    assertThrows(RequestValidationException.class, () ->
+      validator.validate("selected", "notall", "relevance", "query", "name"));
   }
 
-  @Test(expected = RequestValidationException.class)
-  public void shouldThrowExceptionWhenSortIsInvalid() {
-    validator.validate("selected", "all", "abc", "query");
+  @Test
+  void shouldThrowExceptionWhenSortIsInvalid() {
+    assertThrows(RequestValidationException.class, () ->
+      validator.validate("selected", "all", "abc", "query", "name"));
   }
 
-  @Test(expected = RequestValidationException.class)
-  public void shouldThrowExceptionWhenSearchQueryIsEmpty() {
-    validator.validate("selected", "all", "abc", "");
+  @Test
+  void shouldThrowExceptionWhenSearchQueryIsEmpty() {
+    assertThrows(RequestValidationException.class, () ->
+      validator.validate("selected", "all", "abc", "", "name"));
+  }
+
+  @Test
+  void shouldThrowExceptionWhenSearchFieldIsInvalid() {
+    assertThrows(RequestValidationException.class, () ->
+      validator.validate("selected", "all", "abc", "query", "invalid"));
   }
 
 }

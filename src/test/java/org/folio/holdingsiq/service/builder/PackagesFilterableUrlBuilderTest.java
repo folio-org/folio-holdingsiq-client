@@ -1,82 +1,93 @@
 package org.folio.holdingsiq.service.builder;
 
-import static org.junit.Assert.assertEquals;
+import static org.folio.holdingsiq.model.PackageFilterSelected.ORDERED_THROUGH_EBSCO;
+import static org.folio.holdingsiq.model.PackageFilterSelected.SELECTED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-
+import org.folio.holdingsiq.model.PackageFilter;
+import org.folio.holdingsiq.model.PackageFilterType;
+import org.folio.holdingsiq.model.Pageable;
 import org.folio.holdingsiq.model.Sort;
 import org.folio.holdingsiq.service.impl.urlbuilder.PackagesFilterableUrlBuilder;
+import org.junit.jupiter.api.Test;
 
-public class PackagesFilterableUrlBuilderTest {
+class PackagesFilterableUrlBuilderTest {
 
   @Test
-  public void shouldBuildUrlWithFilterSelectedTrue() {
-    String url = new PackagesFilterableUrlBuilder()
-      .filterSelected("selected")
-      .sort(Sort.NAME)
+  void shouldBuildUrlWithFilterSelectedTrue() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSelected(SELECTED).build(),
+      new Pageable(1, 25, Sort.NAME))
       .build();
-    assertEquals("selection=selected&contenttype=all&searchtype=advanced&search=&offset=1&count=25&orderby=packagename", url);
+    assertEquals("selection=selected&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
   }
 
   @Test
-  public void shouldBuildUrlWithFilterSelectedAndTypeDefault() {
-    String url = new PackagesFilterableUrlBuilder()
-      .sort(Sort.NAME)
+  void shouldBuildUrlWithFilterSelectedAndTypeDefault() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder().build(),
+      new Pageable(1, 25, Sort.NAME))
       .build();
-    assertEquals("selection=all&contenttype=all&searchtype=advanced&search=&offset=1&count=25&orderby=packagename", url);
+    assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
   }
 
   @Test
-  public void shouldBuildUrlWithFilterSelectedEBSCO() {
-    String url = new PackagesFilterableUrlBuilder()
-      .filterSelected("orderedthroughebsco")
-      .sort(Sort.NAME)
+  void shouldBuildUrlWithFilterSelectedEBSCO() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSelected(ORDERED_THROUGH_EBSCO).build(),
+      new Pageable(1, 25, Sort.NAME))
       .build();
-    assertEquals("selection=orderedthroughebsco&contenttype=all&searchtype=advanced&search=&offset=1&count=25&orderby=packagename", url);
+    assertEquals(
+      "selection=orderedthroughebsco&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
   }
 
   @Test
-  public void shouldBuildUrlWithFilterType() {
-    String url = new PackagesFilterableUrlBuilder()
-      .filterType("abstractandindex")
-      .sort(Sort.NAME)
+  void shouldBuildUrlWithFilterType() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterType(PackageFilterType.ABSTRACT_AND_INDEX).build(),
+      new Pageable(1, 25, Sort.NAME))
       .build();
-    assertEquals("selection=all&contenttype=abstractandindex&searchtype=advanced&search=&offset=1&count=25&orderby=packagename", url);
+    assertEquals(
+      "selection=all&contenttype=abstractandindex&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
   }
 
   @Test
-  public void shouldBuildUrlWithCount() {
-    String url = new PackagesFilterableUrlBuilder()
-      .count(5)
-      .sort(Sort.NAME)
+  void shouldBuildUrlWithCount() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder().build(),
+      new Pageable(1, 5, Sort.NAME))
       .build();
-    assertEquals("selection=all&contenttype=all&searchtype=advanced&search=&offset=1&count=5&orderby=packagename", url);
+    assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=5&orderby=packagename", url);
   }
 
   @Test
-  public void shouldBuildUrlWithSort() {
-    String url = new PackagesFilterableUrlBuilder()
-      .q("Academic")
-      .sort(Sort.RELEVANCE)
+  void shouldBuildUrlWithSort() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .query("Academic").build(),
+      new Pageable(1, 25, Sort.RELEVANCE))
       .build();
-    assertEquals("selection=all&contenttype=all&searchtype=advanced&search=Academic&offset=1&count=25&orderby=relevance", url);
+    assertEquals(
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=Academic&offset=1&count=25&orderby=relevance", url);
   }
 
   @Test
-  public void shouldBuildUrlWithPage() {
-    String url = new PackagesFilterableUrlBuilder()
-      .page(2)
-      .sort(Sort.NAME)
+  void shouldBuildUrlWithPage() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder().build(),
+      new Pageable(2, 25, Sort.NAME))
       .build();
-    assertEquals("selection=all&contenttype=all&searchtype=advanced&search=&offset=2&count=25&orderby=packagename", url);
+    assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=2&count=25&orderby=packagename",
+      url);
   }
 
   @Test
-  public void shouldBuildUrlWithQABCCLIO() {
-    String url = new PackagesFilterableUrlBuilder()
-      .q("ABC-CLIO")
-      .sort(Sort.RELEVANCE)
+  void shouldBuildUrlWithQABCCLIO() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .query("ABC-CLIO").build(),
+      new Pageable(1, 25, Sort.RELEVANCE))
       .build();
-    assertEquals("selection=all&contenttype=all&searchtype=advanced&search=ABC-CLIO&offset=1&count=25&orderby=relevance", url);
+    assertEquals(
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=ABC-CLIO&offset=1&count=25&orderby=relevance", url);
   }
 }

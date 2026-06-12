@@ -1,22 +1,21 @@
 package org.folio.holdingsiq.service.impl;
 
+import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.LISTS_PATH;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.PACKAGES_PATH;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.VENDORS_PATH;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.successBodyLogger;
 
-import java.util.concurrent.CompletableFuture;
-
 import io.vertx.core.Vertx;
-
+import java.util.concurrent.CompletableFuture;
 import org.folio.holdingsiq.model.Configuration;
-import org.folio.holdingsiq.model.PackageByIdData;
 import org.folio.holdingsiq.model.PackageCreated;
-import org.folio.holdingsiq.model.PackageId;
+import org.folio.holdingsiq.model.PackageData;
+import org.folio.holdingsiq.model.PackageFilter;
 import org.folio.holdingsiq.model.PackagePost;
 import org.folio.holdingsiq.model.PackagePut;
 import org.folio.holdingsiq.model.PackageSelectedPayload;
 import org.folio.holdingsiq.model.Packages;
-import org.folio.holdingsiq.model.Sort;
+import org.folio.holdingsiq.model.Pageable;
 import org.folio.holdingsiq.service.PackagesHoldingsIQService;
 import org.folio.holdingsiq.service.impl.urlbuilder.PackagesFilterableUrlBuilder;
 
@@ -25,62 +24,46 @@ public class PackagesHoldingsIQServiceImpl implements PackagesHoldingsIQService 
   private final HoldingsRequestHelper holdingsRequestHelper;
 
   public PackagesHoldingsIQServiceImpl(Configuration config, Vertx vertx) {
-    holdingsRequestHelper = new HoldingsRequestHelper(config, vertx).addBodyListener(successBodyLogger());
+    this.holdingsRequestHelper = new HoldingsRequestHelper(config, vertx).addBodyListener(successBodyLogger());
   }
 
   @Override
-  public CompletableFuture<PackageByIdData> retrievePackage(PackageId packageId) {
-    final String path = VENDORS_PATH + '/' + packageId.getProviderIdPart()
-      + '/' + PACKAGES_PATH + '/' + packageId.getPackageIdPart();
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), PackageByIdData.class);
+  public CompletableFuture<PackageData> retrievePackage(long packageId) {
+    final String path = LISTS_PATH + '/' + packageId;
+    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURLv2(path), PackageData.class);
   }
 
   @Override
-  public CompletableFuture<Packages> retrievePackages(Long providerId) {
-    return retrievePackages(null, null, null, providerId, null, 1, 25, Sort.NAME);
+  public CompletableFuture<Packages> retrievePackages(PackageFilter packageFilter, Pageable pageable) {
+    var queryParams = new PackagesFilterableUrlBuilder(packageFilter, pageable).build();
+    var url = holdingsRequestHelper.constructURLv2(LISTS_PATH, queryParams);
+    return holdingsRequestHelper.getRequest(url, Packages.class);
   }
 
   @Override
-  public CompletableFuture<Packages> retrievePackages(String filterSelected, String filterType, String searchType,
-                                                      Long providerId, String q, int page, int count, Sort sort) {
-    String path = new PackagesFilterableUrlBuilder()
-      .filterSelected(filterSelected)
-      .filterType(filterType)
-      .searchType(searchType)
-      .q(q)
-      .page(page)
-      .count(count)
-      .sort(sort)
-      .build();
-
-    String packagesPath =
-      providerId == null ? PACKAGES_PATH + "?" : VENDORS_PATH + '/' + providerId + '/' + PACKAGES_PATH + "?";
-
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(packagesPath + path), Packages.class);
+  public CompletableFuture<Packages> retrievePackages(long providerId, PackageFilter packageFilter, Pageable pageable) {
+    var queryParams = new PackagesFilterableUrlBuilder(packageFilter, pageable).build();
+    var url = holdingsRequestHelper.constructURLv2(VENDORS_PATH + '/' + providerId + '/' + LISTS_PATH, queryParams);
+    return holdingsRequestHelper.getRequest(url, Packages.class);
   }
 
   @Override
-  public CompletableFuture<PackageByIdData> postPackage(PackagePost entity, Long vendorId) {
-    String path = VENDORS_PATH + '/' + vendorId + '/' + PACKAGES_PATH;
+  public CompletableFuture<PackageData> postPackage(PackagePost entity, long providerId) {
+    String path = VENDORS_PATH + '/' + providerId + '/' + PACKAGES_PATH;
     return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL(path), entity, PackageCreated.class)
-      .thenCompose(packageCreated -> retrievePackage(
-        PackageId.builder()
-          .providerIdPart(vendorId)
-          .packageIdPart(packageCreated.getPackageId()).build())
-      );
+      .thenCompose(packageCreated -> retrievePackage(packageCreated.packageId()));
   }
 
   @Override
-  public CompletableFuture<Void> updatePackage(PackageId packageId, PackagePut packagePut) {
-    final String path =
-      VENDORS_PATH + '/' + packageId.getProviderIdPart() + '/' + PACKAGES_PATH + '/' + packageId.getPackageIdPart();
-    return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), packagePut);
+  public CompletableFuture<Void> updatePackage(long packageId, PackagePut packagePut) {
+    final String path = LISTS_PATH + '/' + packageId;
+    return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURLv2(path), packagePut);
   }
 
   @Override
-  public CompletableFuture<Void> deletePackage(PackageId packageId) {
-    final String path =
-      VENDORS_PATH + '/' + packageId.getProviderIdPart() + '/' + PACKAGES_PATH + '/' + packageId.getPackageIdPart();
-    return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), new PackageSelectedPayload(false));
+  public CompletableFuture<Void> deletePackage(long packageId) {
+    final String path = LISTS_PATH + '/' + packageId;
+    return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURLv2(path),
+      new PackageSelectedPayload(false));
   }
 }
