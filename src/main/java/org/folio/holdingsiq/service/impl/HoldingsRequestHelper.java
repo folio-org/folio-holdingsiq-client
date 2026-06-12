@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.service.exception.ResourceNotFoundException;
@@ -41,6 +43,7 @@ class HoldingsRequestHelper {
 
   static final String VENDORS_PATH = "vendors";
   static final String PACKAGES_PATH = "packages";
+  static final String LISTS_PATH = "lists";
   static final String TITLES_PATH = "titles";
 
   private static final String RMAPI_API_KEY_HEADER = "X-Api-Key";
@@ -125,9 +128,15 @@ class HoldingsRequestHelper {
   }
 
   String constructURL(String path) {
-    String fullPath = format("%s/rm/rmaccounts/%s/%s", baseURI, customerId, path);
-    log.debug("constructURL - path={}", fullPath);
-    return fullPath;
+    return format("%s/rm/rmaccounts/%s/%s", baseURI, customerId, path);
+  }
+
+  String constructURLv2(String path) {
+    return format("%s/rm/rmaccounts/v2/%s/%s", baseURI, customerId, path);
+  }
+
+  String constructURLv2(String path, String queryParams) {
+    return format("%s/rm/rmaccounts/v2/%s/%s?%s", baseURI, customerId, path, queryParams);
   }
 
   static HoldingsResponseBodyListener successBodyLogger() {
@@ -254,6 +263,7 @@ class HoldingsRequestHelper {
     private static final int HTTP1_MAX_CONNECTIONS = 20;
     private static final int HTTP2_MAX_CONNECTIONS = 3;
 
+    @Getter(AccessLevel.PACKAGE)
     private final WebClient webClient;
 
     WebClientHolder(WebClient wc) {
@@ -265,10 +275,6 @@ class HoldingsRequestHelper {
       return webClients.computeIfAbsent(vertx, vtx ->
         new WebClientHolder(createWebClient(vtx))
       ).getWebClient();
-    }
-
-    WebClient getWebClient() {
-      return webClient;
     }
 
     private static WebClient createWebClient(Vertx vtx) {

@@ -1,36 +1,35 @@
 package org.folio.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
+import org.junit.jupiter.api.Test;
 import io.vertx.core.Vertx;
-import org.junit.Test;
 
-public class VertxCacheTest {
+class VertxCacheTest {
 
   private static final String KEY = "key";
   private static final String VALUE = "value";
   private final VertxCache<String, String> testCache = new VertxCache<>(Vertx.vertx(), 60, "testCache");
 
   @Test
-  public void shouldInitiallyReturnNull() {
+  void shouldInitiallyReturnNull() {
     assertNull(testCache.getValue(KEY));
   }
 
   @Test
-  public void shouldCacheValueAfterPut() {
+  void shouldCacheValueAfterPut() {
     testCache.putValue(KEY, VALUE);
     assertEquals(VALUE, testCache.getValue(KEY));
   }
 
   @Test
-  public void shouldLoadValueOnCacheMiss() {
+  void shouldLoadValueOnCacheMiss() {
     Supplier<CompletableFuture<String>> loader = spy(new TestProducer());
     CompletableFuture<String> returnedValue = testCache.getValueOrLoad(KEY, loader);
     assertEquals(VALUE, testCache.getValue(KEY));
@@ -39,7 +38,7 @@ public class VertxCacheTest {
   }
 
   @Test
-  public void shouldNotLoadValueOnCacheHit() {
+  void shouldNotLoadValueOnCacheHit() {
     Supplier<CompletableFuture<String>> loader = spy(new TestProducer());
     testCache.putValue(KEY, VALUE);
     CompletableFuture<String> returnedValue = testCache.getValueOrLoad(KEY, loader);
@@ -49,14 +48,14 @@ public class VertxCacheTest {
   }
 
   @Test
-  public void shouldInvalidateCache() {
+  void shouldInvalidateCache() {
     testCache.putValue(KEY, VALUE);
     testCache.invalidateAll();
     assertNull(testCache.getValue(KEY));
   }
 
   @Test
-  public void shouldInvalidateCacheByKey() {
+  void shouldInvalidateCacheByKey() {
     testCache.putValue(KEY, VALUE);
     testCache.invalidate(KEY);
     assertNull(testCache.getValue(KEY));

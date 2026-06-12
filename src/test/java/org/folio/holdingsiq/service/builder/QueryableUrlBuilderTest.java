@@ -1,14 +1,14 @@
 package org.folio.holdingsiq.service.builder;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.folio.holdingsiq.model.Sort;
 import org.folio.holdingsiq.service.impl.urlbuilder.QueryableUrlBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-
-public class QueryableUrlBuilderTest {
+class QueryableUrlBuilderTest {
   @Test
-  public void shouldBuildUrlForNameSortWhenSortName() {
+  void shouldBuildUrlForNameSortWhenSortName() {
     String path = new QueryableUrlBuilder()
       .q("ebsco")
       .nameParameter("vendorname")
@@ -18,7 +18,7 @@ public class QueryableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForRelevanceSortWhenSortRelevance() {
+  void shouldBuildUrlForRelevanceSortWhenSortRelevance() {
     String path = new QueryableUrlBuilder()
       .sort(Sort.RELEVANCE)
       .q("ebsco")
@@ -27,7 +27,7 @@ public class QueryableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForNameSortWhenQueryIsNotSet() {
+  void shouldBuildUrlForNameSortWhenQueryIsNotSet() {
     String path = new QueryableUrlBuilder()
       .nameParameter("vendorname")
       .build();

@@ -1,0 +1,66 @@
+{
+  "listId": 1117849,
+  "packageName": "Health & Wellness Resource Center (w/alt health module)",
+  "vendorId": 19,
+  "vendorName": "EBSCO",
+  "isCustom": true,
+  "titleCount": 1,
+  "isSelected": true,
+  "selectedCount": 1,
+  "contentType": "aggregatedfulltext",
+  "visibility": [
+    {
+      "category": "PF",
+      "hidden": false,
+      "reason": "Hidden by customer"
+    }
+  ],
+  "customCoverage": {
+    "beginCoverage": "2002-02-01",
+    "endCoverage": "2020-01-02"
+  },
+  "managedDescription": "Package of medicinal journals",
+  "customDescription": "Package of medicinal journals (custom)",
+  "managedAltNames": [
+    {
+      "id": "1",
+      "altName": "Managed Alternate Name"
+    }
+  ],
+  "isTokenNeeded": true,
+  "allowEbscoToAddTitles": true,
+  "packageType": "Complete",
+  "proxy": {
+    "id": "",
+    "inherited": true,
+    "proxiedUrl": ""
+  },
+  "packageToken": {
+    "factName": "galesiteid",
+    "helpText": "<ul><li>Enter your Gale<sup></sup> site ID in the space provided below. The site ID may contain a combination of alpha/numeric characters, varying in length. <blockquote><p> Example: The site ID immediately follows /itweb/ in a URL. The site ID in the following URL is …………….</ul>",
+    "prompt": "/itweb/",
+    "value": "1234567"
+  },
+  "url": "https://link.gale.com/apps/CDB?u=[[galesiteid]]",
+  "availableForSelection": true,
+  "customAltNames": [
+    {
+      "id": "1",
+      "altName": "Managed Alternate Name"
+    }
+  ],
+  "customDisplayName": "string",
+  "subjectAssociations": [
+    {
+      "name": "General Works",
+      "parentId": "string",
+      "id": 26211,
+      "schemaId": 3,
+      "isCustom": false,
+      "explicitAssignment": true,
+      "subjectHierarchy": "General Works"
+    }
+  ],
+  "packageFreeAccess": true,
+  "isSmartLinksPlusEligible": true
+}

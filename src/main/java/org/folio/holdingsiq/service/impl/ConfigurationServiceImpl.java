@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
@@ -31,9 +33,8 @@ import org.folio.okapi.common.XOkapiHeaders;
 /**
  * Retrieves the RM API connection details from eHoldings.
  */
+@Log4j2
 public class ConfigurationServiceImpl implements ConfigurationService {
-
-  private static final Logger LOG = LogManager.getLogger(ConfigurationServiceImpl.class);
 
   private static final String JSON_API_TYPE = "application/vnd.api+json";
   private static final String USER_CREDS_URL = "/eholdings/user-kb-credential";
@@ -101,10 +102,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
   private void logCredentialsRetrievalResult(JsonObject creds, Throwable t) {
     if (t != null) {
-      LOG.info("Failed to retrieve user credentials: {}", t.getMessage());
+      log.info("Failed to retrieve user credentials: {}", t.getMessage());
     } else {
       var reader = CredentialsReader.from(creds);
-      LOG.info("User credentials retrieved: id = '{}', name = '{}'", reader.getId(), reader.getName());
+      log.info("User credentials retrieved: id = '{}', name = '{}'", reader.getId(), reader.getName());
     }
   }
 
@@ -160,6 +161,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final JsonObject EMPTY_JSON = new JsonObject();
 
+    @Getter(AccessLevel.PACKAGE)
     private String id;
     private JsonObject attrs;
 
@@ -174,10 +176,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     static CredentialsReader from(JsonObject json) {
       return new CredentialsReader(json);
-    }
-
-    String getId() {
-      return id;
     }
 
     String getName() {

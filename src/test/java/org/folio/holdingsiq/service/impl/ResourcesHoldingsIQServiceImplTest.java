@@ -5,10 +5,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static org.folio.holdingsiq.service.util.DataUtils.getResourceBody;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
@@ -17,75 +16,75 @@ import lombok.SneakyThrows;
 import org.apache.hc.core5.http.HttpStatus;
 import org.folio.holdingsiq.model.ResourceSelectedPayload;
 import org.folio.holdingsiq.service.ResourcesHoldingsIQService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResourcesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
+class ResourcesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
 
   private static final String URL = "/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" +
     VENDOR_ID + "/packages/" + PACKAGE_ID + "/titles/" + TITLE_ID;
   private ResourcesHoldingsIQService service;
 
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     service = new ResourcesHoldingsIQServiceImpl(getConfiguration(), Vertx.vertx());
   }
 
   @Test
-  public void testPostResources() {
+  void postResources() {
     ResourceSelectedPayload resourceSelectedPayload = new ResourceSelectedPayload(false, "titleName",
       "pubType", STUB_BASE_URL);
     var urlPattern = new UrlPattern(equalTo(URL), false);
-    wiremockServer.stubFor(
+    wm.stubFor(
       put(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_NO_CONTENT))
     );
-    wiremockServer.stubFor(
+    wm.stubFor(
       get(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody("{}"))
     );
     var completableFuture = service.postResource(resourceSelectedPayload, resourceId);
 
     assertTrue(isCompletedNormally(completableFuture));
-    WireMock.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
-    WireMock.verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
+    wm.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
+    wm.verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
   }
 
   @Test
   @SneakyThrows
-  public void testRetrieveResources() {
+  void retrieveResources() {
     var urlPattern = new UrlPattern(equalTo(URL), false);
 
-    wiremockServer.stubFor(get(urlPattern)
+    wm.stubFor(get(urlPattern)
       .willReturn(aResponse().withStatus(HttpStatus.SC_OK)
         .withBody(getResourceBody())));
 
     var completableFuture = service.retrieveResource(resourceId);
     assertTrue(isCompletedNormally(completableFuture));
     assertNotNull(completableFuture.get().getCustomerResourcesList().getFirst().getProxy().getProxiedUrl());
-    WireMock.verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
+    wm.verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
   }
 
   @Test
-  public void testUpdateResources() {
+  void updateResources() {
     var urlPattern = new UrlPattern(equalTo(URL), false);
-    wiremockServer.stubFor(
+    wm.stubFor(
       put(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_NO_CONTENT))
     );
     var completableFuture = service.updateResource(resourceId, resourcePut);
 
     assertTrue(isCompletedNormally(completableFuture));
-    WireMock.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
+    wm.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
   }
 
   @Test
-  public void testDeleteResource() {
+  void deleteResource() {
     var urlPattern = new UrlPattern(equalTo(URL), false);
-    wiremockServer.stubFor(
+    wm.stubFor(
       put(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_NO_CONTENT))
     );
     var completableFuture = service.deleteResource(resourceId);
 
     assertTrue(isCompletedNormally(completableFuture));
-    WireMock.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
+    wm.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
   }
 }
