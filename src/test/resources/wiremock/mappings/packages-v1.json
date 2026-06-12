@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/rm/rmaccounts/customer_id/vendors/5555/packages"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"packageId\": 2222\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

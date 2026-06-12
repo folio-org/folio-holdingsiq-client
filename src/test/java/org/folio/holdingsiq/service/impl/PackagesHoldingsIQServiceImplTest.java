@@ -1,123 +1,113 @@
 package org.folio.holdingsiq.service.impl;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.junit.Assert.assertTrue;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
-import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
-import org.apache.hc.core5.http.HttpStatus;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.folio.holdingsiq.model.PackageData;
+import org.folio.holdingsiq.model.PackageFilter;
+import org.folio.holdingsiq.model.PackageFilterSelected;
+import org.folio.holdingsiq.model.PackageFilterType;
 import org.folio.holdingsiq.model.PackagePut;
+import org.folio.holdingsiq.model.Pageable;
+import org.folio.holdingsiq.model.SearchType;
 import org.folio.holdingsiq.model.Sort;
 import org.folio.holdingsiq.service.PackagesHoldingsIQService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
+class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
 
   private PackagesHoldingsIQService service;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     service = new PackagesHoldingsIQServiceImpl(getConfiguration(), Vertx.vertx());
   }
 
   @Test
-  public void testRetrievePackages() {
-    var urlPattern = new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID
-      + "/packages?selection=orderedthroughebsco&contenttype=filterType&searchtype=advanced&search=" +
-      "Query&offset=1&count=5&orderby=packagename"), false);
-    wiremockServer.stubFor(
-      get(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody("{}"))
-    );
-    var completableFuture = service.retrievePackages("orderedthroughebsco",
-      "filterType", null, VENDOR_ID, "Query", PAGE_FOR_PARAM, COUNT_FOR_PARAM, Sort.NAME);
+  void retrievePackages() {
+    var packageFilter = PackageFilter.builder()
+      .filterSelected(PackageFilterSelected.ORDERED_THROUGH_EBSCO)
+      .filterType(PackageFilterType.ALL)
+      .searchType(SearchType.ADVANCED)
+      .query("Query")
+      .build();
+    var pageable = new Pageable(PAGE_FOR_PARAM, COUNT_FOR_PARAM, Sort.NAME);
+    var completableFuture = service.retrievePackages(packageFilter, pageable);
 
     assertTrue(isCompletedNormally(completableFuture));
-    verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
+    var expectedPath = "/rm/rmaccounts/v2/" + STUB_CUSTOMER_ID + "/lists";
+    var expectedQuery = "?selection=orderedthroughebsco"
+                        + "&contenttype=all"
+                        + "&searchtype=advanced"
+                        + "&searchfield=name"
+                        + "&search=Query"
+                        + "&offset=1"
+                        + "&count=5"
+                        + "&orderby=packagename";
+    wm.verify(getRequestedFor(urlEqualTo(expectedPath + expectedQuery)));
   }
 
   @Test
-  public void testRetrievePackagesWithVendorId() {
-    var urlPattern = new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID
-      + "/packages?selection=all&contenttype=all&searchtype=advanced&search=&offset=1"
-      + "&count=25&orderby=packagename"), false);
-    wiremockServer.stubFor(
-      get(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody("{}"))
-    );
-    var completableFuture = service.retrievePackages(VENDOR_ID);
+  void retrievePackagesWithVendorId() {
+    var packageFilter = PackageFilter.builder().build();
+    var pageable = new Pageable(1, 25, Sort.NAME);
+    var completableFuture = service.retrievePackages(VENDOR_ID, packageFilter, pageable);
 
     assertTrue(isCompletedNormally(completableFuture));
-    verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
+    var expectedPath = "/rm/rmaccounts/v2/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/lists";
+    var expectedQuery = "?selection=all"
+                        + "&contenttype=all"
+                        + "&searchtype=advanced"
+                        + "&searchfield=name"
+                        + "&search="
+                        + "&offset=1"
+                        + "&count=25"
+                        + "&orderby=packagename";
+    wm.verify(getRequestedFor(urlEqualTo(expectedPath + expectedQuery)));
   }
 
   @Test
-  public void testRetrievePackage() {
-    var urlPattern =
-      new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/packages/" + PACKAGE_ID),
-        false);
-    wiremockServer.stubFor(
-      get(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody(Json.encode(packageCreated)))
-    );
-    var completableFuture = service.retrievePackage(packageId);
+  void retrievePackage() throws Exception {
+    var completableFuture = service.retrievePackage(PACKAGE_ID);
 
     assertTrue(isCompletedNormally(completableFuture));
-    verify(new RequestPatternBuilder(RequestMethod.GET, urlPattern));
+    var expectedPackage = Json.decodeValue(getJson("package-2222.json"), PackageData.class);
+    assertEquals(expectedPackage, completableFuture.join());
   }
 
   @Test
-  public void testUpdatePackage() {
-    var urlPattern =
-      new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/packages/" + PACKAGE_ID),
-        false);
-    wiremockServer.stubFor(
-      put(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_NO_CONTENT))
-    );
-    var completableFuture = service.updatePackage(packageId, PackagePut.builder().build());
+  void updatePackage() {
+    var completableFuture = service.updatePackage(PACKAGE_ID, PackagePut.builder().build());
 
     assertTrue(isCompletedNormally(completableFuture));
-    verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
+    var urlPattern = urlEqualTo("/rm/rmaccounts/v2/" + STUB_CUSTOMER_ID + "/lists/" + PACKAGE_ID);
+    wm.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
   }
 
   @Test
-  public void testDeletePackage() {
-    var urlPattern =
-      new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/packages/" + PACKAGE_ID),
-        false);
-    wiremockServer.stubFor(
-      put(urlPattern).willReturn(aResponse().withStatus(HttpStatus.SC_NO_CONTENT))
-    );
-    var completableFuture = service.deletePackage(packageId);
+  void deletePackage() {
+    var completableFuture = service.deletePackage(PACKAGE_ID);
 
     assertTrue(isCompletedNormally(completableFuture));
-    verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
+    var urlPattern = urlEqualTo("/rm/rmaccounts/v2/" + STUB_CUSTOMER_ID + "/lists/" + PACKAGE_ID);
+    wm.verify(new RequestPatternBuilder(RequestMethod.PUT, urlPattern));
   }
 
   @Test
-  public void testPostPackage() {
-    var urlPatternGet =
-      new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/packages/" + PACKAGE_ID),
-        false);
-    var urlPatternPost =
-      new UrlPattern(equalTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/packages"), false);
-    wiremockServer.stubFor(
-      post(urlPatternPost).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody(Json.encode(packageCreated)))
-    );
-    wiremockServer.stubFor(
-      get(urlPatternGet).willReturn(aResponse().withStatus(HttpStatus.SC_OK).withBody(Json.encode(packageCreated)))
-    );
+  void postPackage() {
     var completableFuture = service.postPackage(packagePost, VENDOR_ID);
 
     assertTrue(isCompletedNormally(completableFuture));
-    verify(new RequestPatternBuilder(RequestMethod.POST, urlPatternPost));
-    verify(new RequestPatternBuilder(RequestMethod.GET, urlPatternGet));
+    var urlPatternPost = urlEqualTo("/rm/rmaccounts/" + STUB_CUSTOMER_ID + "/vendors/" + VENDOR_ID + "/packages");
+    wm.verify(new RequestPatternBuilder(RequestMethod.POST, urlPatternPost));
+    var urlPatternGet = urlEqualTo("/rm/rmaccounts/v2/" + STUB_CUSTOMER_ID + "/lists/" + PACKAGE_ID);
+    wm.verify(new RequestPatternBuilder(RequestMethod.GET, urlPatternGet));
   }
 }

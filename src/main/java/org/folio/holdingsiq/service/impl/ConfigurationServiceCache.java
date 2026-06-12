@@ -7,7 +7,7 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
+import lombok.RequiredArgsConstructor;
 import io.vertx.core.Context;
 
 import lombok.extern.log4j.Log4j2;
@@ -18,18 +18,12 @@ import org.folio.holdingsiq.model.OkapiData;
 import org.folio.holdingsiq.service.ConfigurationService;
 
 @Log4j2
+@RequiredArgsConstructor
 public class ConfigurationServiceCache implements ConfigurationService {
 
   private final ConfigurationService configurationService;
 
   private final VertxCache<String, Configuration> configurationCache;
-
-
-  public ConfigurationServiceCache(ConfigurationService configurationService,
-      VertxCache<String, Configuration> configurationCache) {
-    this.configurationService = configurationService;
-    this.configurationCache = configurationCache;
-  }
 
   @Override
   public CompletableFuture<Configuration> retrieveConfiguration(OkapiData okapiData) {

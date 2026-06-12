@@ -1,17 +1,17 @@
 package org.folio.holdingsiq.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.folio.okapi.common.XOkapiHeaders;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class OkapiDataTest {
+class OkapiDataTest {
 
   @Test
-  public void testOkapiDataInitialization() {
+  void okapiDataInitialization() {
     Map<String, String> headers = new HashMap<>();
     headers.put(XOkapiHeaders.TOKEN, "test-token");
     headers.put(XOkapiHeaders.TENANT, "test-tenant");
@@ -29,7 +29,7 @@ public class OkapiDataTest {
   }
 
   @Test
-  public void testOkapiDataInitializationWithInvalidUrl() {
+  void okapiDataInitializationWithInvalidUrl() {
     Map<String, String> headers = new HashMap<>();
     headers.put(XOkapiHeaders.URL, "invalid-url");
 
@@ -37,7 +37,7 @@ public class OkapiDataTest {
   }
 
   @Test
-  public void testOkapiDataInitializationWithDefaultPort() {
+  void okapiDataInitializationWithDefaultPort() {
     Map<String, String> headers = new HashMap<>();
     headers.put(XOkapiHeaders.URL, "http://localhost");
 
@@ -48,7 +48,7 @@ public class OkapiDataTest {
   }
 
   @Test
-  public void testOkapiDataInitializationWithCaseInsensitiveHeaders() {
+  void okapiDataInitializationWithCaseInsensitiveHeaders() {
     Map<String, String> headers = new HashMap<>();
     headers.put("x-okapi-token", "test-token");
     headers.put("x-okapi-tenant", "test-tenant");

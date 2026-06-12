@@ -1,18 +1,17 @@
 package org.folio.holdingsiq.service.config;
 
 import static io.vertx.core.Future.succeededFuture;
-import static io.vertx.core.http.HttpHeaders.*;
+import static io.vertx.core.http.HttpHeaders.ACCEPT;
 import static org.apache.hc.core5.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 import static org.folio.holdingsiq.service.config.ConfigTestData.OKAPI_DATA;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -23,16 +22,18 @@ import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.StringUtils;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.service.impl.ConfigurationServiceImpl;
 import org.folio.okapi.common.XOkapiHeaders;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-public class RMAPIConfigurationServiceTest {
+@ExtendWith(MockitoExtension.class)
+class RMAPIConfigurationServiceTest {
 
   private static final String JSON_API_TYPE = "application/vnd.api+json";
   private static final String USER_CREDS_URL = "/eholdings/user-kb-credential";
@@ -55,10 +56,8 @@ public class RMAPIConfigurationServiceTest {
   private MultiMap headers;
   private ConfigurationServiceImpl service;
 
-  @Before
-  public void setUp() throws Exception {
-    openMocks(this).close();
-
+  @BeforeEach
+  void setUp() {
     try (var mocked = mockStatic(WebClient.class)) {
       mocked.when(() -> WebClient.create(vertx)).thenReturn(webClient);
       service = new ConfigurationServiceImpl(vertx);
@@ -66,7 +65,7 @@ public class RMAPIConfigurationServiceTest {
   }
 
   @Test
-  public void shouldReturnConfiguration() throws ExecutionException, InterruptedException {
+  void shouldReturnConfiguration() throws Exception {
     mockCredentialsRequest();
 
     when(httpResponse.statusCode()).thenReturn(SC_OK);
@@ -91,7 +90,7 @@ public class RMAPIConfigurationServiceTest {
   }
 
   @Test
-  public void shouldReturnPartiallyInitializedConfiguration() throws ExecutionException, InterruptedException {
+  void shouldReturnPartiallyInitializedConfiguration() throws Exception {
     mockCredentialsRequest();
 
     when(httpResponse.statusCode()).thenReturn(SC_OK);
@@ -107,18 +106,17 @@ public class RMAPIConfigurationServiceTest {
 
     assertNotNull(conf);
     assertEquals(USER_CRED_CUSTOMERID, conf.getCustomerId());
-    assertNull(USER_CRED_APIKEY, conf.getApiKey());
-    assertNull(USER_CRED_URL, conf.getUrl());
+    assertNull(conf.getApiKey(), USER_CRED_APIKEY);
+    assertNull(conf.getUrl(), USER_CRED_URL);
 
     verifyCredentialsRequest();
   }
 
   @Test
-  public void shouldFailIfUserCredentialsResponseIsNotOk() {
+  void shouldFailIfUserCredentialsResponseIsNotOk() {
     mockCredentialsRequest();
 
     when(httpResponse.statusCode()).thenReturn(SC_INTERNAL_SERVER_ERROR);
-    when(httpResponse.toString()).thenReturn("failure");
 
     CompletableFuture<Configuration> result = service.retrieveConfiguration(OKAPI_DATA);
 

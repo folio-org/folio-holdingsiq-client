@@ -52,10 +52,10 @@ public class ProviderHoldingsIQServiceImpl implements ProviderHoldingsIQService 
   }
 
   @Override
-  public CompletableFuture<VendorById> updateProvider(long id, VendorPut rmapiVendor) {
+  public CompletableFuture<VendorById> updateProvider(long id, VendorPut vendorPut) {
     final String path = VENDORS_PATH + '/' + id;
 
-    return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), rmapiVendor)
+    return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), vendorPut)
       .thenCompose(vend -> this.retrieveProvider(id));
   }
 
