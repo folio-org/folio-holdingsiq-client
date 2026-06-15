@@ -17,12 +17,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.folio.holdingsiq.model.Configuration;
 import org.folio.holdingsiq.model.ConfigurationError;
-import org.folio.holdingsiq.model.OkapiData;
+import org.folio.holdingsiq.model.RequestContext;
 import org.folio.holdingsiq.service.ConfigurationService;
 import org.folio.holdingsiq.service.exception.ConfigurationServiceException;
 import org.folio.holdingsiq.service.exception.ServiceResponseException;
@@ -31,9 +32,8 @@ import org.folio.okapi.common.XOkapiHeaders;
 /**
  * Retrieves the RM API connection details from eHoldings.
  */
+@Log4j2
 public class ConfigurationServiceImpl implements ConfigurationService {
-
-  private static final Logger LOG = LogManager.getLogger(ConfigurationServiceImpl.class);
 
   private static final String JSON_API_TYPE = "application/vnd.api+json";
   private static final String USER_CREDS_URL = "/eholdings/user-kb-credential";
@@ -45,13 +45,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
   }
 
   @Override
-  public CompletableFuture<Configuration> retrieveConfiguration(OkapiData okapiData) {
-    return getUserCredentials(okapiData).thenApply(this::credentialsToConfiguration);
+  public CompletableFuture<Configuration> retrieveConfiguration(RequestContext requestContext) {
+    return getUserCredentials(requestContext).thenApply(this::credentialsToConfiguration);
   }
 
   @Override
   public CompletableFuture<List<ConfigurationError>> verifyCredentials(Configuration configuration,
-                                                                       Context vertxContext, OkapiData okapiData) {
+                                                                       Context vertxContext, RequestContext requestContext) {
     List<ConfigurationError> errors = new ArrayList<>();
 
     if (!isConfigurationParametersValid(configuration, errors)) {
@@ -85,8 +85,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     return statusCode == 401 || statusCode == 403 || statusCode == 404;
   }
 
-  private CompletableFuture<JsonObject> getUserCredentials(OkapiData okapiData) {
-    return mapVertxFuture(getCredentialsJson(okapiData)).whenComplete(this::logCredentialsRetrievalResult);
+  private CompletableFuture<JsonObject> getUserCredentials(RequestContext requestContext) {
+    return mapVertxFuture(getCredentialsJson(requestContext)).whenComplete(this::logCredentialsRetrievalResult);
   }
 
   private <T> CompletableFuture<T> mapVertxFuture(Future<T> future) {
@@ -101,18 +101,18 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
   private void logCredentialsRetrievalResult(JsonObject creds, Throwable t) {
     if (t != null) {
-      LOG.info("Failed to retrieve user credentials: {}", t.getMessage());
+      log.info("Failed to retrieve user credentials: {}", t.getMessage());
     } else {
       var reader = CredentialsReader.from(creds);
-      LOG.info("User credentials retrieved: id = '{}', name = '{}'", reader.getId(), reader.getName());
+      log.info("User credentials retrieved: id = '{}', name = '{}'", reader.getId(), reader.getName());
     }
   }
 
-  private Future<JsonObject> getCredentialsJson(OkapiData okapiData) {
-    return client.get(okapiData.getOkapiPort(), okapiData.getOkapiHost(), USER_CREDS_URL)
-      .putHeader(XOkapiHeaders.TENANT, okapiData.getTenant())
-      .putHeader(XOkapiHeaders.TOKEN, okapiData.getApiToken())
-      .putHeader(XOkapiHeaders.USER_ID, okapiData.getUserId())
+  private Future<JsonObject> getCredentialsJson(RequestContext requestContext) {
+    return client.get(requestContext.getPort(), requestContext.getHost(), USER_CREDS_URL)
+      .putHeader(XOkapiHeaders.TENANT, requestContext.getTenant())
+      .putHeader(XOkapiHeaders.TOKEN, requestContext.getToken())
+      .putHeader(XOkapiHeaders.USER_ID, requestContext.getUserId())
       .putHeader(HttpHeaders.ACCEPT.toString(), JSON_API_TYPE)
       .send()
       .expecting(HttpResponseExpectation.contentType(JSON_API_TYPE))
@@ -160,6 +160,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final JsonObject EMPTY_JSON = new JsonObject();
 
+    @Getter(AccessLevel.PACKAGE)
     private String id;
     private JsonObject attrs;
 
@@ -174,10 +175,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     static CredentialsReader from(JsonObject json) {
       return new CredentialsReader(json);
-    }
-
-    String getId() {
-      return id;
     }
 
     String getName() {

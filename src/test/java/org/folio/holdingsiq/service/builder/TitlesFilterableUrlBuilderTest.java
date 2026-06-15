@@ -1,27 +1,26 @@
 package org.folio.holdingsiq.service.builder;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.folio.holdingsiq.model.FilterQuery;
 import org.folio.holdingsiq.model.Sort;
 import org.folio.holdingsiq.service.impl.urlbuilder.TitlesFilterableUrlBuilder;
 
 import java.util.List;
 
-public class TitlesFilterableUrlBuilderTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class TitlesFilterableUrlBuilderTest {
 
   private FilterQuery.FilterQueryBuilder fqb;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     fqb = FilterQuery.builder();
   }
 
   @Test
-  public void shouldBuildUrlWithCount() {
+  void shouldBuildUrlWithCount() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.name("ebsco").build())
       .count(5)
@@ -32,7 +31,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlWithSort() {
+  void shouldBuildUrlWithSort() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.name("ebsco").build())
       .sort(Sort.NAME)
@@ -42,7 +41,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlWithPage() {
+  void shouldBuildUrlWithPage() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.name("ebsco").build())
       .page(2)
@@ -53,7 +52,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForFilterBySelectedStatus() {
+  void shouldBuildUrlForFilterBySelectedStatus() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.name("news").type("book").selected("selected").build())
       .sort(Sort.RELEVANCE)
@@ -63,7 +62,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForFilterByIsxn() {
+  void shouldBuildUrlForFilterByIsxn() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.isxn("1362-3613").build())
       .sort(Sort.RELEVANCE)
@@ -73,7 +72,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForFilterBySubject() {
+  void shouldBuildUrlForFilterBySubject() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.subject("history").build())
       .sort(Sort.RELEVANCE)
@@ -83,7 +82,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForFilterByPublisher() {
+  void shouldBuildUrlForFilterByPublisher() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.publisher("publisherName").build())
       .sort(Sort.RELEVANCE)
@@ -93,7 +92,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlForFilterByType() {
+  void shouldBuildUrlForFilterByType() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.type("book").build())
       .sort(Sort.RELEVANCE)
@@ -103,7 +102,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlforDefaultTitleSearchAndSort() {
+  void shouldBuildUrlforDefaultTitleSearchAndSort() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.build())
       .sort(Sort.RELEVANCE)
@@ -113,7 +112,7 @@ public class TitlesFilterableUrlBuilderTest {
   }
 
   @Test
-  public void shouldBuildUrlPackageIdsFilter() {
+  void shouldBuildUrlPackageIdsFilter() {
     String url = new TitlesFilterableUrlBuilder()
       .filter(fqb.packageIds(List.of(123, 456)).build())
       .sort(Sort.RELEVANCE)

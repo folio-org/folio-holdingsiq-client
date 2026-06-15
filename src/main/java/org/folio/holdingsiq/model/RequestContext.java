@@ -9,29 +9,29 @@ import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.folio.okapi.common.XOkapiHeaders;
 
 @Getter
-public class OkapiData {
+public class RequestContext {
 
   private final Map<String, String> headers;
-  private final String apiToken;
+  private final String token;
   private final String tenant;
-  private final String okapiHost;
-  private final int okapiPort;
-  private final String okapiUrl;
+  private final String host;
+  private final int port;
+  private final String url;
   private final String userId;
 
-  public OkapiData(Map<String, String> headers) {
+  public RequestContext(Map<String, String> headers) {
     this.headers = new CaseInsensitiveMap<>(headers);
-    this.apiToken = this.headers.get(XOkapiHeaders.TOKEN);
+    this.token = this.headers.get(XOkapiHeaders.TOKEN);
     this.tenant = this.headers.get(XOkapiHeaders.TENANT);
     this.userId = this.headers.get(XOkapiHeaders.USER_ID);
-    this.okapiUrl = this.headers.get(XOkapiHeaders.URL);
+    this.url = this.headers.get(XOkapiHeaders.URL);
 
     try {
-      var url = new URI(okapiUrl).toURL();
-      this.okapiHost = url.getHost();
-      this.okapiPort = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
+      var parsedUrl = new URI(this.url).toURL();
+      this.host = parsedUrl.getHost();
+      this.port = parsedUrl.getPort() != -1 ? parsedUrl.getPort() : parsedUrl.getDefaultPort();
     } catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {
-      throw new IllegalArgumentException("Okapi url header does not contain valid url", e);
+      throw new IllegalArgumentException("Url header does not contain valid url", e);
     }
   }
 

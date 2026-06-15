@@ -1,0 +1,65 @@
+{
+  "packagesList": [
+    {
+      "listId": 1117849,
+      "packageName": "Health & Wellness Resource Center (w/alt health module)",
+      "customDisplayName": "Health & Wellness",
+      "managedAltNames": [
+        "Health & Wellness Resource Center Alternative"
+      ],
+      "customAltNames": [
+        "Health & Wellness Resource Center Alternative"
+      ],
+      "managedDescription": "Health & Wellness Resource Description example",
+      "customDescription": "Custom Health & Wellness Resource Description example that's modified by a customer",
+      "isCustom": true,
+      "vendorId": 19,
+      "vendorName": "EBSCO",
+      "titleCount": 1,
+      "isSelected": true,
+      "isOrderedThroughEbsco": false,
+      "packageFreeAccess": false,
+      "visibility": [
+        {
+          "category": "PF",
+          "hidden": false,
+          "reason": "Hidden by customer"
+        }
+      ],
+      "selectedCount": 1,
+      "isTokenNeeded": true,
+      "customCoverage": {
+        "beginCoverage": "2002-02-01",
+        "endCoverage": "2020-01-02"
+      },
+      "contentType": "aggregatedfulltext",
+      "packageType": "Complete",
+      "availableForSelection": true,
+      "url": "http://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=27h",
+      "proxiedUrl": "http://ezproxy.myinstitute.edu/login?url=http://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=27h",
+      "subjectAssociations": [
+        {
+          "id": 35408,
+          "parentId": 35407,
+          "schemaId": 3,
+          "name": "Technology",
+          "isCustom": false
+        }
+      ],
+      "consortia": "string",
+      "isPrimaryPackage": true
+    }
+  ],
+  "totalResults": 5,
+  "facets": {
+    "subjects": [
+      {
+        "parentId": "35407",
+        "schema": "Library of Congress",
+        "id": 5207,
+        "name": "EBSCO eBooks",
+        "count": 1
+      }
+    ]
+  }
+}

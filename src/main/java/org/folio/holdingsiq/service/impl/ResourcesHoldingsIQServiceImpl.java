@@ -32,27 +32,27 @@ public class ResourcesHoldingsIQServiceImpl implements ResourcesHoldingsIQServic
   @Override
   public CompletableFuture<Title> retrieveResource(ResourceId resourceId) {
     CompletableFuture<Title> titleFuture;
-    final String path = format(RESOURCE_ENDPOINT_FORMAT, resourceId.getProviderIdPart(), resourceId.getPackageIdPart(), resourceId.getTitleIdPart());
+    final String path = format(RESOURCE_ENDPOINT_FORMAT, resourceId.providerIdPart(), resourceId.packageIdPart(), resourceId.titleIdPart());
     titleFuture = holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), Title.class);
     return titleFuture;
   }
 
   @Override
   public CompletableFuture<Title> postResource(ResourceSelectedPayload resourcePost, ResourceId resourceId) {
-    final String path = format(RESOURCE_ENDPOINT_FORMAT, resourceId.getProviderIdPart(), resourceId.getPackageIdPart(), resourceId.getTitleIdPart());
+    final String path = format(RESOURCE_ENDPOINT_FORMAT, resourceId.providerIdPart(), resourceId.packageIdPart(), resourceId.titleIdPart());
     return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), resourcePost)
       .thenCompose(o -> this.retrieveResource(resourceId));
   }
 
 
   public CompletableFuture<Void> updateResource(ResourceId parsedResourceId, ResourcePut resourcePutBody) {
-    final String path = VENDORS_PATH + '/' + parsedResourceId.getProviderIdPart() + '/' + PACKAGES_PATH + '/' + parsedResourceId.getPackageIdPart() + '/' + TITLES_PATH + '/' + parsedResourceId.getTitleIdPart();
+    final String path = VENDORS_PATH + '/' + parsedResourceId.providerIdPart() + '/' + PACKAGES_PATH + '/' + parsedResourceId.packageIdPart() + '/' + TITLES_PATH + '/' + parsedResourceId.titleIdPart();
     return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), resourcePutBody);
   }
 
   @Override
   public CompletableFuture<Void> deleteResource(ResourceId parsedResourceId) {
-    final String path = VENDORS_PATH + '/' + parsedResourceId.getProviderIdPart() + '/' + PACKAGES_PATH + '/' + parsedResourceId.getPackageIdPart() + '/' + TITLES_PATH + '/' + parsedResourceId.getTitleIdPart();
+    final String path = VENDORS_PATH + '/' + parsedResourceId.providerIdPart() + '/' + PACKAGES_PATH + '/' + parsedResourceId.packageIdPart() + '/' + TITLES_PATH + '/' + parsedResourceId.titleIdPart();
     return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), new ResourceDeletePayload(false));
   }
 }

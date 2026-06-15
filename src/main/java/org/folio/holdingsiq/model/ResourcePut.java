@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder(toBuilder = true)
 @RequiredArgsConstructor
-@AllArgsConstructor(onConstructor = @__(@JsonIgnore))
+@AllArgsConstructor(onConstructor_ =@JsonIgnore)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourcePut {
 
