@@ -32,9 +32,9 @@ public class HoldingsIQServiceTestConfig {
   protected static final String STUB_BASE_URL = "https://sandbox.ebsco.io";
   protected static final int PAGE_FOR_PARAM = 1;
   protected static final int COUNT_FOR_PARAM = 5;
-  protected static final long PACKAGE_ID = 2222L;
-  protected static final long TITLE_ID = 3333L;
-  protected static final long VENDOR_ID = 5555L;
+  protected static final int PACKAGE_ID = 2222;
+  protected static final int TITLE_ID = 3333;
+  protected static final int VENDOR_ID = 5555;
 
   @RegisterExtension
   public static WireMockExtension wm = WireMockExtension.newInstance().options(WireMockConfiguration.wireMockConfig()

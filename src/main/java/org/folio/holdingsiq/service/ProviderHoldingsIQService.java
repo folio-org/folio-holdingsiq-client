@@ -9,9 +9,9 @@ import org.folio.holdingsiq.model.Vendors;
 
 public interface ProviderHoldingsIQService {
 
-  CompletableFuture<Long> getVendorId();
-  CompletableFuture<VendorById> retrieveProvider(long id);
+  CompletableFuture<Integer> getVendorId();
+  CompletableFuture<VendorById> retrieveProvider(int id);
   CompletableFuture<Vendors> retrieveProviders(String q, int page, int count, Sort sort);
-  CompletableFuture<VendorById> updateProvider(long id, VendorPut vendorPut);
+  CompletableFuture<VendorById> updateProvider(int id, VendorPut vendorPut);
 
 }

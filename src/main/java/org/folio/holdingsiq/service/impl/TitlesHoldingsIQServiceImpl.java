@@ -32,7 +32,7 @@ public class TitlesHoldingsIQServiceImpl implements TitlesHoldingsIQService {
   }
 
   @Override
-  public CompletableFuture<Title> retrieveTitle(long titleId) {
+  public CompletableFuture<Title> retrieveTitle(int titleId) {
     final String path = TITLES_PATH + '/' + titleId;
     return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), Title.class);
   }
@@ -60,7 +60,7 @@ public class TitlesHoldingsIQServiceImpl implements TitlesHoldingsIQService {
   }
 
   @Override
-  public CompletableFuture<Titles> retrieveTitles(long providerId, long packageId, FilterQuery filterQuery,
+  public CompletableFuture<Titles> retrieveTitles(int providerId, int packageId, FilterQuery filterQuery,
                                                   String searchType, Sort sort,
                                                   int page, int count) {
     String query = new TitlesFilterableUrlBuilder()

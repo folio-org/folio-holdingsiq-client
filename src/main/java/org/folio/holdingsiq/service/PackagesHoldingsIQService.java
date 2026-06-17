@@ -10,15 +10,15 @@ import org.folio.holdingsiq.model.Pageable;
 
 public interface PackagesHoldingsIQService {
 
-  CompletableFuture<PackageData> retrievePackage(long packageId);
+  CompletableFuture<PackageData> retrievePackage(int packageId);
 
   CompletableFuture<Packages> retrievePackages(PackageFilter packageFilter, Pageable pageable);
 
-  CompletableFuture<Packages> retrievePackages(long providerId, PackageFilter packageFilter, Pageable pageable);
+  CompletableFuture<Packages> retrievePackages(int providerId, PackageFilter packageFilter, Pageable pageable);
 
-  CompletableFuture<PackageData> postPackage(PackagePost entity, long providerId);
+  CompletableFuture<PackageData> postPackage(PackagePost entity, int providerId);
 
-  CompletableFuture<Void> updatePackage(long packageId, PackagePut packagePut);
+  CompletableFuture<Void> updatePackage(int packageId, PackagePut packagePut);
 
-  CompletableFuture<Void> deletePackage(long packageId);
+  CompletableFuture<Void> deletePackage(int packageId);
 }

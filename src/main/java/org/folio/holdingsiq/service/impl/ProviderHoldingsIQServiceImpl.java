@@ -37,14 +37,14 @@ public class ProviderHoldingsIQServiceImpl implements ProviderHoldingsIQService 
   }
 
   @Override
-  public CompletableFuture<Long> getVendorId(){
+  public CompletableFuture<Integer> getVendorId(){
     return holdingsIQService.retrieveRootProxyCustomLabels()
       .thenCompose(rootProxyCustomLabels ->
-        CompletableFuture.completedFuture(Long.parseLong(rootProxyCustomLabels.getVendorId())));
+        CompletableFuture.completedFuture(Integer.parseInt(rootProxyCustomLabels.getVendorId())));
   }
 
   @Override
-  public CompletableFuture<VendorById> retrieveProvider(long id) {
+  public CompletableFuture<VendorById> retrieveProvider(int id) {
     CompletableFuture<VendorById> vendorFuture;
     final String path = VENDORS_PATH + '/' + id;
     vendorFuture = holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), VendorById.class);
@@ -52,7 +52,7 @@ public class ProviderHoldingsIQServiceImpl implements ProviderHoldingsIQService 
   }
 
   @Override
-  public CompletableFuture<VendorById> updateProvider(long id, VendorPut vendorPut) {
+  public CompletableFuture<VendorById> updateProvider(int id, VendorPut vendorPut) {
     final String path = VENDORS_PATH + '/' + id;
 
     return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURL(path), vendorPut)

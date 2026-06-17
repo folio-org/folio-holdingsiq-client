@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record SubjectFacet(
-  @JsonProperty("id") Long id,
-  @JsonProperty("parentId") Long parentId,
+  @JsonProperty("id") Integer id,
+  @JsonProperty("parentId") Integer parentId,
   @JsonProperty("schema") String subjectSchema,
   @JsonProperty("name") String subjectName,
   @JsonProperty("count") Integer totalCount

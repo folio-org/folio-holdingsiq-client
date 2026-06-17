@@ -5,5 +5,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record TitleCreated(
-  @JsonProperty("titleId") Long titleId
+  @JsonProperty("titleId") Integer titleId
 ) { }
