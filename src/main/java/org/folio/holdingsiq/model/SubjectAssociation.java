@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record SubjectAssociation(
-  @JsonProperty("id") Long id,
-  @JsonProperty("schemaId") Long schemaId,
+  @JsonProperty("id") Integer id,
+  @JsonProperty("schemaId") Integer schemaId,
   @JsonProperty("name") String name,
   @JsonProperty("isCustom") Boolean isCustom,
   @JsonProperty("explicitAssignment") Boolean explicitAssignment,

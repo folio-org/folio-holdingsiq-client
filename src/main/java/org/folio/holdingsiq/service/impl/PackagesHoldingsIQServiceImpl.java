@@ -28,7 +28,7 @@ public class PackagesHoldingsIQServiceImpl implements PackagesHoldingsIQService 
   }
 
   @Override
-  public CompletableFuture<PackageData> retrievePackage(long packageId) {
+  public CompletableFuture<PackageData> retrievePackage(int packageId) {
     final String path = LISTS_PATH + '/' + packageId;
     return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURLv2(path), PackageData.class);
   }
@@ -41,27 +41,27 @@ public class PackagesHoldingsIQServiceImpl implements PackagesHoldingsIQService 
   }
 
   @Override
-  public CompletableFuture<Packages> retrievePackages(long providerId, PackageFilter packageFilter, Pageable pageable) {
+  public CompletableFuture<Packages> retrievePackages(int providerId, PackageFilter packageFilter, Pageable pageable) {
     var queryParams = new PackagesFilterableUrlBuilder(packageFilter, pageable).build();
     var url = holdingsRequestHelper.constructURLv2(VENDORS_PATH + '/' + providerId + '/' + LISTS_PATH, queryParams);
     return holdingsRequestHelper.getRequest(url, Packages.class);
   }
 
   @Override
-  public CompletableFuture<PackageData> postPackage(PackagePost entity, long providerId) {
+  public CompletableFuture<PackageData> postPackage(PackagePost entity, int providerId) {
     String path = VENDORS_PATH + '/' + providerId + '/' + PACKAGES_PATH;
     return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL(path), entity, PackageCreated.class)
       .thenCompose(packageCreated -> retrievePackage(packageCreated.packageId()));
   }
 
   @Override
-  public CompletableFuture<Void> updatePackage(long packageId, PackagePut packagePut) {
+  public CompletableFuture<Void> updatePackage(int packageId, PackagePut packagePut) {
     final String path = LISTS_PATH + '/' + packageId;
     return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURLv2(path), packagePut);
   }
 
   @Override
-  public CompletableFuture<Void> deletePackage(long packageId) {
+  public CompletableFuture<Void> deletePackage(int packageId) {
     final String path = LISTS_PATH + '/' + packageId;
     return holdingsRequestHelper.putRequest(holdingsRequestHelper.constructURLv2(path),
       new PackageSelectedPayload(false));

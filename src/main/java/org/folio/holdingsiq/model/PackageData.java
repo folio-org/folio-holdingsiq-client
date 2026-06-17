@@ -21,7 +21,7 @@ import lombok.ToString;
 public class PackageData {
 
   @JsonProperty("listId")
-  private Long packageId;
+  private Integer packageId;
 
   @JsonProperty("packageName")
   private String packageName;
@@ -47,7 +47,7 @@ public class PackageData {
   private Boolean isCustom;
 
   @JsonProperty("vendorId")
-  private Long vendorId;
+  private Integer vendorId;
 
   @JsonProperty("vendorName")
   private String vendorName;
