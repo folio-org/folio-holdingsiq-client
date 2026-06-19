@@ -19,14 +19,14 @@ class AlternateNameListDeserializerTest {
   @Test
   void deserialize_arrayOfObjects_returnsAlternateNames() throws Exception {
     var json = packageWith(
-      "[{\"id\":\"1\",\"altName\":\"Foo\"},{\"id\":\"2\",\"altName\":\"Bar\"}]");
+      "[{\"id\":1,\"altName\":\"Foo\"},{\"id\":2,\"altName\":\"Bar\"}]");
 
     List<AlternateName> result = readManagedAltNames(json);
 
     assertNotNull(result);
     assertEquals(2, result.size());
-    assertEquals(new AlternateName("1", "Foo"), result.get(0));
-    assertEquals(new AlternateName("2", "Bar"), result.get(1));
+    assertEquals(new AlternateName(1, "Foo"), result.get(0));
+    assertEquals(new AlternateName(2, "Bar"), result.get(1));
   }
 
   @Test
@@ -66,20 +66,20 @@ class AlternateNameListDeserializerTest {
 
   @Test
   void deserialize_mixedObjectsAndStrings_handlesEachCorrectly() throws Exception {
-    var json = packageWith("[{\"id\":\"1\",\"altName\":\"ObjName\"},\"StrName\"]");
+    var json = packageWith("[{\"id\":1,\"altName\":\"ObjName\"},\"StrName\"]");
 
     List<AlternateName> result = readManagedAltNames(json);
 
     assertNotNull(result);
     assertEquals(2, result.size());
-    assertEquals(new AlternateName("1", "ObjName"), result.get(0));
+    assertEquals(new AlternateName(1, "ObjName"), result.get(0));
     assertEquals(new AlternateName(null, "StrName"), result.get(1));
   }
 
 
   @Test
   void deserialize_notAnArray_throwsMismatchedInputException() {
-    var json = packageWith("{\"id\":\"1\",\"altName\":\"Foo\"}");
+    var json = packageWith("{\"id\":1,\"altName\":\"Foo\"}");
 
     assertThrows(MismatchedInputException.class, () -> readManagedAltNames(json));
   }
