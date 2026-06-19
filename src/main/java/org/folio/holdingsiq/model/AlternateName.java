@@ -5,6 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record AlternateName(
-  @JsonProperty("id") String id,
+  @JsonProperty("id") Integer id,
   @JsonProperty("altName") String altName
 ) { }
