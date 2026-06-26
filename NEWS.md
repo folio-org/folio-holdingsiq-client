@@ -1,9 +1,9 @@
-## v5.1.0 YYYY-mm-DD
+## v6.0.0 YYYY-mm-DD
 ### Breaking changes
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Update package endpoints to use v2 API ([FHIQC-49](https://folio-org.atlassian.net/browse/FHIQC-49))
 
 ### Features
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Add additional fields to the PackagePost model ([FHIQC-57](https://folio-org.atlassian.net/browse/FHIQC-57))
 
 ### Bug fixes
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
