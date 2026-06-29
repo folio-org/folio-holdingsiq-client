@@ -19,14 +19,14 @@
   </licenses>
 
   <properties>
-    <vertx.version>5.1.2</vertx.version>
+    <vertx.version>5.1.3</vertx.version>
     <lombok.version>1.18.46</lombok.version>
     <jackson.version>2.22.0</jackson.version>
     <commons-validator.version>1.10.1</commons-validator.version>
     <log4j.version>2.26.0</log4j.version>
     <commons-collections4.version>4.5.0</commons-collections4.version>
     <commons-lang3.version>3.20.0</commons-lang3.version>
-    <okapi-common.version>7.0.4</okapi-common.version>
+    <okapi-common.version>7.0.5</okapi-common.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -34,7 +34,7 @@
     <sonar.coverage.exclusions>**/model/**</sonar.coverage.exclusions>
 
     <!-- Test dependencies versions   -->
-    <junit.version>6.1.0</junit.version>
+    <junit.version>6.1.1</junit.version>
     <mockito.version>5.23.0</mockito.version>
     <wiremock.version>3.13.2</wiremock.version>
     <awaitility.version>4.3.0</awaitility.version>
