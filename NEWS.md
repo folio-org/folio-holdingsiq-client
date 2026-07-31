@@ -6,7 +6,7 @@
 * Add additional fields to the PackagePost model ([FHIQC-57](https://folio-org.atlassian.net/browse/FHIQC-57))
 
 ### Bug fixes
-* Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
+* Set "permissions: contents: read" in maven.yml ([FOLIO-4553](https://folio-org.atlassian.net/browse/FOLIO-4553))
 
 ### Tech Dept
 * Description ([ISSUE](https://folio-org.atlassian.net/browse/ISSUE))
