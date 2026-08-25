@@ -21,7 +21,7 @@
   <properties>
     <vertx.version>5.1.6</vertx.version>
     <lombok.version>1.18.46</lombok.version>
-    <jackson.version>2.22.1</jackson.version>
+    <jackson.version>2.22.2</jackson.version>
     <commons-validator.version>1.11.0</commons-validator.version>
     <log4j.version>2.26.1</log4j.version>
     <commons-collections4.version>4.6.0</commons-collections4.version>
