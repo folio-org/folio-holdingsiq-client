@@ -19,8 +19,8 @@
   </licenses>
 
   <properties>
-    <vertx.version>5.1.6</vertx.version>
-    <lombok.version>1.18.46</lombok.version>
+    <vertx.version>5.1.7</vertx.version>
+    <lombok.version>1.18.48</lombok.version>
     <jackson.version>2.22.2</jackson.version>
     <commons-validator.version>1.11.0</commons-validator.version>
     <log4j.version>2.26.1</log4j.version>
@@ -41,9 +41,9 @@
 
     <!-- Plugin versions   -->
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
-    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
     <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
   </properties>
 
