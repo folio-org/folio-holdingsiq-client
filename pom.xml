@@ -19,9 +19,9 @@
   </licenses>
 
   <properties>
-    <vertx.version>5.1.8</vertx.version>
+    <vertx.version>5.2.0</vertx.version>
     <lombok.version>1.18.48</lombok.version>
-    <jackson.version>2.22.2</jackson.version>
+    <jackson.version>2.22.3</jackson.version>
     <commons-validator.version>1.11.0</commons-validator.version>
     <log4j.version>2.26.1</log4j.version>
     <commons-collections4.version>4.6.0</commons-collections4.version>
@@ -35,7 +35,7 @@
 
     <!-- Test dependencies versions   -->
     <junit.version>6.1.3</junit.version>
-    <mockito.version>5.23.0</mockito.version>
+    <mockito.version>5.24.0</mockito.version>
     <wiremock.version>3.13.2</wiremock.version>
     <awaitility.version>4.3.0</awaitility.version>
 
