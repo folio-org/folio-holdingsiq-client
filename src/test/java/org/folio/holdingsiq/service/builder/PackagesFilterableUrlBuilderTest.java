@@ -89,7 +89,7 @@ class PackagesFilterableUrlBuilderTest {
       new Pageable(1, 25, Sort.NAME))
       .build();
     assertEquals(
-      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&subjectids=5207,35408&search=&offset=1&count=25&orderby=packagename",
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&subjectfilter=5207,35408&search=&offset=1&count=25&orderby=packagename",
       url);
   }
 
@@ -122,7 +122,7 @@ class PackagesFilterableUrlBuilderTest {
       .build();
     assertEquals(
       "selection=all&contenttype=all&searchtype=advanced&searchfield=name&facetstoinclude=subject&subjectfacetcount=1000"
-        + "&subjectids=5207&search=&offset=1&count=25&orderby=packagename",
+        + "&subjectfilter=5207&search=&offset=1&count=25&orderby=packagename",
       url);
   }
 

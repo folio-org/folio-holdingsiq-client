@@ -21,7 +21,7 @@ import org.folio.holdingsiq.model.Sort;
 public class PackagesFilterableUrlBuilder {
 
   private static final String SUBJECT_FACET = "subject";
-  private static final String SUBJECT_IDS_PARAM = "subjectids";
+  private static final String SUBJECT_FILTER_PARAM = "subjectfilter";
   private static final int SUBJECT_FACET_COUNT_DEFAULT = 1000;
 
   private final PackageFilterFreeAccess filterPackageFreeAccess;
@@ -90,7 +90,7 @@ public class PackagesFilterableUrlBuilder {
         .map(String::valueOf)
         .collect(Collectors.joining(","));
       if (!subjectIds.isEmpty()) {
-        parameters.add(SUBJECT_IDS_PARAM + "=" + subjectIds);
+        parameters.add(SUBJECT_FILTER_PARAM + "=" + subjectIds);
       }
     }
     if (filterPackageFreeAccess != null) {

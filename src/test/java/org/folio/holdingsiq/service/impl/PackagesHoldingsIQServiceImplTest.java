@@ -71,7 +71,7 @@ class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
                         + "&contenttype=all"
                         + "&searchtype=advanced"
                         + "&searchfield=name"
-                        + "&subjectids=5207"
+                        + "&subjectfilter=5207"
                         + "&search="
                         + "&offset=1"
                         + "&count=25"
