@@ -3,9 +3,12 @@ package org.folio.holdingsiq.service.impl.urlbuilder;
 import static java.lang.Boolean.TRUE;
 import static java.util.Objects.requireNonNullElse;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.folio.holdingsiq.model.PackageFilter;
@@ -22,6 +25,7 @@ public class PackagesFilterableUrlBuilder {
 
   private static final String SUBJECT_FACET = "subject";
   private static final String SUBJECT_FILTER_PARAM = "subjectfilter";
+  private static final String SUBJECT_SCHEMA_PARAM = "subjectschema";
   private static final int SUBJECT_FACET_COUNT_DEFAULT = 1000;
 
   private final PackageFilterFreeAccess filterPackageFreeAccess;
@@ -35,6 +39,7 @@ public class PackagesFilterableUrlBuilder {
   private final boolean includeSubjectFacet;
   private final int subjectFacetCount;
   private final List<Integer> filterSubjectIds;
+  private final List<String> filterSubjectSchemas;
   private final int page;
   private final int count;
   private final Sort sort;
@@ -54,6 +59,7 @@ public class PackagesFilterableUrlBuilder {
                              ? packageFilter.subjectFacetCount()
                              : SUBJECT_FACET_COUNT_DEFAULT;
     this.filterSubjectIds = packageFilter.filterSubjectIds();
+    this.filterSubjectSchemas = packageFilter.filterSubjectSchemas();
     this.q = packageFilter.query();
     this.page = pageable.page();
     this.count = pageable.count();
@@ -84,15 +90,9 @@ public class PackagesFilterableUrlBuilder {
       parameters.add("facetstoinclude=" + SUBJECT_FACET);
       parameters.add("subjectfacetcount=" + subjectFacetCount);
     }
-    if (CollectionUtils.isNotEmpty(filterSubjectIds)) {
-      String subjectIds = filterSubjectIds.stream()
-        .filter(Objects::nonNull)
-        .map(String::valueOf)
-        .collect(Collectors.joining(","));
-      if (!subjectIds.isEmpty()) {
-        parameters.add(SUBJECT_FILTER_PARAM + "=" + subjectIds);
-      }
-    }
+    addListParameter(parameters, SUBJECT_FILTER_PARAM, filterSubjectIds, String::valueOf);
+    addListParameter(parameters, SUBJECT_SCHEMA_PARAM, filterSubjectSchemas,
+      schema -> URLEncoder.encode(schema, StandardCharsets.UTF_8));
     if (filterPackageFreeAccess != null) {
       parameters.add("packagefreeaccess=" + filterPackageFreeAccess);
     }
@@ -102,5 +102,19 @@ public class PackagesFilterableUrlBuilder {
     parameters.add(query);
 
     return String.join("&", parameters);
+  }
+
+  private static <T> void addListParameter(List<String> parameters, String name, List<T> values,
+                                           Function<T, String> mapper) {
+    if (CollectionUtils.isEmpty(values)) {
+      return;
+    }
+    String joined = values.stream()
+      .filter(Objects::nonNull)
+      .map(mapper)
+      .collect(Collectors.joining(","));
+    if (!joined.isEmpty()) {
+      parameters.add(name + "=" + joined);
+    }
   }
 }

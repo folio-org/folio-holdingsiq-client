@@ -127,6 +127,42 @@ class PackagesFilterableUrlBuilderTest {
   }
 
   @Test
+  void shouldBuildUrlWithEncodedSubjectSchemas() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .includeSubjectFacet(true)
+      .filterSubjectSchemas(List.of("Library of Congress", "BISAC")).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals(
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&facetstoinclude=subject&subjectfacetcount=1000"
+        + "&subjectschema=Library+of+Congress,BISAC&search=&offset=1&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
+  void shouldBuildUrlWithoutSubjectSchemasWhenEmpty() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSubjectSchemas(List.of()).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
+  void shouldBuildUrlWithSubjectIdsAndSubjectSchemas() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSubjectIds(List.of(5207))
+      .filterSubjectSchemas(List.of("BISAC")).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals(
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&subjectfilter=5207&subjectschema=BISAC"
+        + "&search=&offset=1&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
   void shouldBuildUrlWithQABCCLIO() {
     String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
       .query("ABC-CLIO").build(),

@@ -4,7 +4,7 @@
 
 ### Features
 * Add additional fields to the PackagePost model ([FHIQC-57](https://folio-org.atlassian.net/browse/FHIQC-57))
-* Support subject filter for packages search and subject parentId in subject associations ([FHIQC-60](https://folio-org.atlassian.net/browse/FHIQC-60))
+* Support subject and subject schema filters for packages search and subject parentId in subject associations ([FHIQC-60](https://folio-org.atlassian.net/browse/FHIQC-60))
 
 ### Bug fixes
 * Set "permissions: contents: read" in maven.yml ([FOLIO-4553](https://folio-org.atlassian.net/browse/FOLIO-4553))

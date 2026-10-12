@@ -17,6 +17,7 @@ public record PackageFilter(
   String highlightTag,
   Boolean includeSubjectFacet,
   Integer subjectFacetCount,
-  List<Integer> filterSubjectIds
+  List<Integer> filterSubjectIds,
+  List<String> filterSubjectSchemas
 
 ) {}
