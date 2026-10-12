@@ -4,6 +4,7 @@ import static org.folio.holdingsiq.model.PackageFilterSelected.ORDERED_THROUGH_E
 import static org.folio.holdingsiq.model.PackageFilterSelected.SELECTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 import org.folio.holdingsiq.model.PackageFilter;
 import org.folio.holdingsiq.model.PackageFilterType;
 import org.folio.holdingsiq.model.Pageable;
@@ -78,6 +79,50 @@ class PackagesFilterableUrlBuilderTest {
       new Pageable(2, 25, Sort.NAME))
       .build();
     assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=2&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
+  void shouldBuildUrlWithSubjectIds() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSubjectIds(List.of(5207, 35408)).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals(
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&subjectids=5207,35408&search=&offset=1&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
+  void shouldBuildUrlWithoutSubjectIdsWhenEmpty() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSubjectIds(List.of()).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
+  void shouldBuildUrlWithoutSubjectIdsWhenOnlyNulls() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .filterSubjectIds(java.util.Collections.singletonList(null)).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals("selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename",
+      url);
+  }
+
+  @Test
+  void shouldBuildUrlWithSubjectFacetAndSubjectIds() {
+    String url = new PackagesFilterableUrlBuilder(PackageFilter.builder()
+      .includeSubjectFacet(true)
+      .filterSubjectIds(List.of(5207)).build(),
+      new Pageable(1, 25, Sort.NAME))
+      .build();
+    assertEquals(
+      "selection=all&contenttype=all&searchtype=advanced&searchfield=name&facetstoinclude=subject&subjectfacetcount=1000"
+        + "&subjectids=5207&search=&offset=1&count=25&orderby=packagename",
       url);
   }
 

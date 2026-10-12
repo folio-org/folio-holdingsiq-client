@@ -5,6 +5,9 @@ import static java.util.Objects.requireNonNullElse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.folio.holdingsiq.model.PackageFilter;
 import org.folio.holdingsiq.model.PackageFilterFreeAccess;
 import org.folio.holdingsiq.model.PackageFilterSelected;
@@ -18,6 +21,7 @@ import org.folio.holdingsiq.model.Sort;
 public class PackagesFilterableUrlBuilder {
 
   private static final String SUBJECT_FACET = "subject";
+  private static final String SUBJECT_IDS_PARAM = "subjectids";
   private static final int SUBJECT_FACET_COUNT_DEFAULT = 1000;
 
   private final PackageFilterFreeAccess filterPackageFreeAccess;
@@ -30,6 +34,7 @@ public class PackagesFilterableUrlBuilder {
   private final String highlightTag;
   private final boolean includeSubjectFacet;
   private final int subjectFacetCount;
+  private final List<Integer> filterSubjectIds;
   private final int page;
   private final int count;
   private final Sort sort;
@@ -48,6 +53,7 @@ public class PackagesFilterableUrlBuilder {
     this.subjectFacetCount = packageFilter.subjectFacetCount() != null
                              ? packageFilter.subjectFacetCount()
                              : SUBJECT_FACET_COUNT_DEFAULT;
+    this.filterSubjectIds = packageFilter.filterSubjectIds();
     this.q = packageFilter.query();
     this.page = pageable.page();
     this.count = pageable.count();
@@ -77,6 +83,15 @@ public class PackagesFilterableUrlBuilder {
     if (includeSubjectFacet) {
       parameters.add("facetstoinclude=" + SUBJECT_FACET);
       parameters.add("subjectfacetcount=" + subjectFacetCount);
+    }
+    if (CollectionUtils.isNotEmpty(filterSubjectIds)) {
+      String subjectIds = filterSubjectIds.stream()
+        .filter(Objects::nonNull)
+        .map(String::valueOf)
+        .collect(Collectors.joining(","));
+      if (!subjectIds.isEmpty()) {
+        parameters.add(SUBJECT_IDS_PARAM + "=" + subjectIds);
+      }
     }
     if (filterPackageFreeAccess != null) {
       parameters.add("packagefreeaccess=" + filterPackageFreeAccess);
