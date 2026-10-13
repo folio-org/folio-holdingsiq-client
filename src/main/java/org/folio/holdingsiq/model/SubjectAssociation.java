@@ -11,6 +11,5 @@ public record SubjectAssociation(
   @JsonProperty("isCustom") Boolean isCustom,
   @JsonProperty("explicitAssignment") Boolean explicitAssignment,
   @JsonProperty("subjectHierarchy") String subjectHierarchy,
-  // String because HoldingsIQ returns parentId as both a number and a string
-  @JsonProperty("parentId") String parentId
+  @JsonProperty("parentId") Integer parentId
 ) { }
