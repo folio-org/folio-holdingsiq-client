@@ -10,6 +10,5 @@ public record SubjectAssociation(
   @JsonProperty("name") String name,
   @JsonProperty("isCustom") Boolean isCustom,
   @JsonProperty("explicitAssignment") Boolean explicitAssignment,
-  @JsonProperty("subjectHierarchy") String subjectHierarchy,
-  @JsonProperty("parentId") Integer parentId
+  @JsonProperty("subjectHierarchy") String subjectHierarchy
 ) { }

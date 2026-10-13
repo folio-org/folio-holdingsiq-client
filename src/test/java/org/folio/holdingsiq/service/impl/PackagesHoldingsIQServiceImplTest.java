@@ -53,8 +53,6 @@ class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
                         + "&count=5"
                         + "&orderby=packagename";
     wm.verify(getRequestedFor(urlEqualTo(expectedPath + expectedQuery)));
-    var packages = completableFuture.join();
-    assertEquals(35407, packages.getPackagesList().get(0).getSubjectAssociations().get(0).parentId());
   }
 
   @Test
@@ -104,9 +102,7 @@ class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
 
     assertTrue(isCompletedNormally(completableFuture));
     var expectedPackage = Json.decodeValue(getJson("package-2222.json"), PackageData.class);
-    var actualPackage = completableFuture.join();
-    assertEquals(expectedPackage, actualPackage);
-    assertEquals(26210, actualPackage.getSubjectAssociations().get(0).parentId());
+    assertEquals(expectedPackage, completableFuture.join());
   }
 
   @Test
