@@ -53,6 +53,8 @@ class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
                         + "&count=5"
                         + "&orderby=packagename";
     wm.verify(getRequestedFor(urlEqualTo(expectedPath + expectedQuery)));
+    var subjectAssociation = completableFuture.join().getPackagesList().get(0).getSubjectAssociations().get(0);
+    assertEquals(35407, subjectAssociation.parentId());
   }
 
   @Test
