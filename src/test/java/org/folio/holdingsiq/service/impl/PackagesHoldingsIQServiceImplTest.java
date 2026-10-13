@@ -9,6 +9,7 @@ import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
+import java.util.List;
 import org.folio.holdingsiq.model.PackageData;
 import org.folio.holdingsiq.model.PackageFilter;
 import org.folio.holdingsiq.model.PackageFilterSelected;
@@ -50,6 +51,30 @@ class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
                         + "&search=Query"
                         + "&offset=1"
                         + "&count=5"
+                        + "&orderby=packagename";
+    wm.verify(getRequestedFor(urlEqualTo(expectedPath + expectedQuery)));
+    var subjectAssociation = completableFuture.join().getPackagesList().get(0).getSubjectAssociations().get(0);
+    assertEquals(35407, subjectAssociation.parentId());
+  }
+
+  @Test
+  void retrievePackagesWithSubjectIds() {
+    var packageFilter = PackageFilter.builder()
+      .filterSubjectIds(List.of(5207))
+      .build();
+    var pageable = new Pageable(1, 25, Sort.NAME);
+    var completableFuture = service.retrievePackages(packageFilter, pageable);
+
+    assertTrue(isCompletedNormally(completableFuture));
+    var expectedPath = "/rm/rmaccounts/v2/" + STUB_CUSTOMER_ID + "/lists";
+    var expectedQuery = "?selection=all"
+                        + "&contenttype=all"
+                        + "&searchtype=advanced"
+                        + "&searchfield=name"
+                        + "&subjectfilter=5207"
+                        + "&search="
+                        + "&offset=1"
+                        + "&count=25"
                         + "&orderby=packagename";
     wm.verify(getRequestedFor(urlEqualTo(expectedPath + expectedQuery)));
   }

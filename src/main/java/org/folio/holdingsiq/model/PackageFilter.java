@@ -1,5 +1,6 @@
 package org.folio.holdingsiq.model;
 
+import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -15,6 +16,8 @@ public record PackageFilter(
   Boolean filterPrimaryPackage,
   String highlightTag,
   Boolean includeSubjectFacet,
-  Integer subjectFacetCount
+  Integer subjectFacetCount,
+  List<Integer> filterSubjectIds,
+  List<String> filterSubjectSchemas
 
 ) {}

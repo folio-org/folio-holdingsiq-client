@@ -38,6 +38,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/rm/rmaccounts/v2/customer_id/lists?selection=all&contenttype=all&searchtype=advanced&searchfield=name&subjectfilter=5207&search=&offset=1&count=25&orderby=packagename"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "packages-list.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/rm/rmaccounts/v2/customer_id/vendors/5555/lists?selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=&offset=1&count=25&orderby=packagename"
       },
       "response": {
