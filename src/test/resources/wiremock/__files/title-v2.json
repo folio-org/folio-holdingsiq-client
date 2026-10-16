@@ -1,0 +1,86 @@
+{
+  "kbid": 3333,
+  "titleName": "A Tale of Two Cities",
+  "publisherName": "EBSCO",
+  "identifiersList": [
+    {
+      "id": "1362-3613",
+      "source": "AtoZ",
+      "subtype": 1,
+      "type": 0
+    }
+  ],
+  "subjectsList": [
+    {
+      "type": "BISAC",
+      "subject": "PHILOSOPHY / Movements / Critical Theory"
+    }
+  ],
+  "isTitleCustom": false,
+  "alternateTitleList": [
+    {
+      "alternateTitle": "Two Cities",
+      "titleType": "Abbreviated"
+    }
+  ],
+  "pubType": "Book",
+  "customerResourcesList": [
+    {
+      "kbid": 3333,
+      "listId": 2222,
+      "packageName": "Health & Wellness Resource Center",
+      "packageType": "Complete",
+      "proxy": {
+        "id": "EZProxy",
+        "inherited": true,
+        "proxiedUrl": "https://ezproxy.example.edu/login?url=https://search.ebscohost.com"
+      },
+      "isPackageCustom": false,
+      "vendorId": 5555,
+      "vendorName": "EBSCO",
+      "locationId": 777,
+      "isSelected": true,
+      "isOrderedThroughEbsco": false,
+      "isTokenNeeded": false,
+      "visibility": [
+        {
+          "category": "pf",
+          "hidden": true,
+          "reason": "Hidden by customer"
+        },
+        {
+          "category": "ftf",
+          "hidden": false,
+          "reason": ""
+        }
+      ],
+      "managedCoverageList": [
+        {
+          "beginCoverage": "2000-01-01",
+          "endCoverage": "2010-12-31"
+        }
+      ],
+      "customCoverageList": [],
+      "coverageStatement": "Issues on or after 6/1/1992",
+      "managedEmbargoPeriod": {
+        "embargoUnit": "Months",
+        "embargoValue": 6
+      },
+      "url": "https://search.ebscohost.com/title/3333",
+      "isPrimaryPackage": true,
+      "kbartExcluded": false,
+      "kbartCoverageOwnership": false,
+      "userDefinedField1": "udf1",
+      "consortia": "KERIS"
+    }
+  ],
+  "description": "A novel",
+  "edition": "1st",
+  "isPeerReviewed": false,
+  "contributorsList": [
+    {
+      "type": "author",
+      "contributor": "Dickens, Charles"
+    }
+  ]
+}

@@ -1,28 +1,26 @@
 package org.folio.holdingsiq.service.impl;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.PACKAGES_PATH;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.TITLES_PATH;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.VENDORS_PATH;
 import static org.folio.holdingsiq.service.impl.HoldingsRequestHelper.successBodyLogger;
 
 import io.vertx.core.Vertx;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 import org.folio.holdingsiq.model.Configuration;
-import org.folio.holdingsiq.model.FilterQuery;
 import org.folio.holdingsiq.model.PackageId;
-import org.folio.holdingsiq.model.Sort;
+import org.folio.holdingsiq.model.Pageable;
 import org.folio.holdingsiq.model.Title;
 import org.folio.holdingsiq.model.TitleCreated;
+import org.folio.holdingsiq.model.TitleFilter;
 import org.folio.holdingsiq.model.TitlePost;
 import org.folio.holdingsiq.model.Titles;
 import org.folio.holdingsiq.service.TitlesHoldingsIQService;
 import org.folio.holdingsiq.service.impl.urlbuilder.TitlesFilterableUrlBuilder;
 
 public class TitlesHoldingsIQServiceImpl implements TitlesHoldingsIQService {
+
+  private static final String INCLUDE_RELATIONSHIPS_PARAM = "includerelationships=true";
 
   private final HoldingsRequestHelper holdingsRequestHelper;
 
@@ -33,88 +31,40 @@ public class TitlesHoldingsIQServiceImpl implements TitlesHoldingsIQService {
 
   @Override
   public CompletableFuture<Title> retrieveTitle(int titleId) {
-    final String path = TITLES_PATH + '/' + titleId;
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), Title.class);
+    return getTitle(titleId, false);
   }
 
   @Override
-  public CompletableFuture<Titles> retrieveTitles(String rmapiQuery) {
-    var path = String.format("titles?%s", rmapiQuery);
-    return getTitles(path)
-      .thenCompose(titles -> completedFuture(postProcessTitles(titles)));
+  public CompletableFuture<Title> retrieveTitleWithRelationships(int titleId) {
+    return getTitle(titleId, true);
   }
 
   @Override
-  public CompletableFuture<Titles> retrieveTitles(FilterQuery filterQuery, String searchType,
-                                                  Sort sort, int page, int count) {
-    String query = new TitlesFilterableUrlBuilder()
-      .filter(filterQuery)
-      .searchType(searchType)
-      .sort(sort)
-      .page(page)
-      .count(count)
-      .build();
-
-    return getTitles(TITLES_PATH + "?" + query)
-      .thenCompose(titles -> completedFuture(postProcessTitles(titles)));
+  public CompletableFuture<Titles> retrieveTitles(TitleFilter titleFilter, Pageable pageable) {
+    var queryParams = new TitlesFilterableUrlBuilder(titleFilter, pageable).build();
+    var requestUrl = holdingsRequestHelper.constructURLv2(TITLES_PATH, queryParams);
+    return holdingsRequestHelper.getRequest(requestUrl, Titles.class);
   }
 
-  @Override
-  public CompletableFuture<Titles> retrieveTitles(int providerId, int packageId, FilterQuery filterQuery,
-                                                  String searchType, Sort sort,
-                                                  int page, int count) {
-    String query = new TitlesFilterableUrlBuilder()
-      .filter(filterQuery)
-      .searchType(searchType)
-      .sort(sort)
-      .page(page)
-      .count(count)
-      .build();
-
-    String titlesPath = VENDORS_PATH + '/' + providerId + '/' + PACKAGES_PATH + '/' + packageId + '/' + TITLES_PATH;
-
-    return getTitles(titlesPath + "?" + query)
-      .thenCompose(titles -> completedFuture(postProcessTitles(titles)));
-  }
-
+  /**
+   * Creates a custom title. There is no v2 create endpoint, so the title is created via v1 and then
+   * retrieved via v2; the v1 titleId and the v2 kbid are the same identifier.
+   */
   @Override
   public CompletableFuture<Title> postTitle(TitlePost titlePost, PackageId packageId) {
-    return this.createTitle(titlePost, packageId)
+    var titlePath = VENDORS_PATH + '/' + packageId.providerIdPart() + '/'
+                    + PACKAGES_PATH + '/' + packageId.packageIdPart() + '/'
+                    + TITLES_PATH;
+    var requestUrl = holdingsRequestHelper.constructURL(titlePath);
+    return holdingsRequestHelper.postRequest(requestUrl, titlePost, TitleCreated.class)
       .thenCompose(titleCreated -> retrieveTitle(titleCreated.titleId()));
   }
 
-  private CompletableFuture<Titles> getTitles(String path) {
-    return holdingsRequestHelper.getRequest(holdingsRequestHelper.constructURL(path), Titles.class);
-  }
-
-  private Titles postProcessTitles(Titles titles) {
-    int initialSize = titles.getTitleList().size();
-    removeInvalidObjects(titles);
-    final Integer totalResults = getTotalResults(titles, initialSize);
-    return titles.toBuilder().totalResults(totalResults).build();
-  }
-
-  private void removeInvalidObjects(Titles titles) {
-    Predicate<Title> isNullPredicate = Objects::isNull;
-    Predicate<Title> isEmptyCustomerResourcesListPredicate = title -> title.getCustomerResourcesList().isEmpty();
-
-    titles.getTitleList().removeIf((isNullPredicate).or(isEmptyCustomerResourcesListPredicate));
-  }
-
-  private Integer getTotalResults(Titles titles, int initialSize) {
-
-    final int sizeAfterRemove = titles.getTitleList().size();
-    final int removedCount = initialSize - sizeAfterRemove;
-
-    return Optional.ofNullable(titles.getTotalResults())
-      .map(total -> total - removedCount)
-      .orElse(0);
-  }
-
-  private CompletableFuture<TitleCreated> createTitle(TitlePost entity, PackageId packageId) {
-    final String path = VENDORS_PATH + '/' + packageId.providerIdPart() + '/'
-                        + PACKAGES_PATH + '/' + packageId.packageIdPart() + '/'
-                        + TITLES_PATH;
-    return holdingsRequestHelper.postRequest(holdingsRequestHelper.constructURL(path), entity, TitleCreated.class);
+  private CompletableFuture<Title> getTitle(int titleId, boolean includeRelationships) {
+    final String path = TITLES_PATH + '/' + titleId;
+    var requestUrl = includeRelationships
+                     ? holdingsRequestHelper.constructURLv2(path, INCLUDE_RELATIONSHIPS_PARAM)
+                     : holdingsRequestHelper.constructURLv2(path);
+    return holdingsRequestHelper.getRequest(requestUrl, Title.class);
   }
 }

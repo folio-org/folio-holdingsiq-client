@@ -19,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourcePut {
 
-  @JsonProperty("isHidden")
-  private Boolean isHidden;
+  @JsonProperty("visibility")
+  private List<Visibility> visibilityDetails;
   @JsonProperty("titleName")
   private String titleName;
   @JsonProperty("pubType")

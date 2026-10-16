@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public enum PackageFilterFreeAccess {
+public enum FilterFreeAccess {
 
   ALL("all"),
   TRUE("true"),
@@ -15,7 +15,7 @@ public enum PackageFilterFreeAccess {
   private final String value;
 
   public static boolean contains(String value) {
-    for (PackageFilterFreeAccess c : values()) {
+    for (FilterFreeAccess c : values()) {
       if (c.value.equals(value)) {
         return true;
       }
@@ -23,11 +23,11 @@ public enum PackageFilterFreeAccess {
     return false;
   }
 
-  public static PackageFilterFreeAccess fromValue(String value) {
+  public static FilterFreeAccess fromValue(String value) {
     if (value == null) {
       return null;
     }
-    for (PackageFilterFreeAccess c : values()) {
+    for (FilterFreeAccess c : values()) {
       if (c.value.equalsIgnoreCase(value)) {
         return c;
       }

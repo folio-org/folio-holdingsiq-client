@@ -1,7 +1,7 @@
 package org.folio.holdingsiq.service.validator;
 
 import java.util.Objects;
-import org.folio.holdingsiq.model.PackageFilterSelected;
+import org.folio.holdingsiq.model.FilterSelected;
 import org.folio.holdingsiq.model.PackageFilterType;
 import org.folio.holdingsiq.model.PackageSearchField;
 import org.folio.holdingsiq.model.Sort;
@@ -21,7 +21,7 @@ public class PackageParametersValidator {
     if (Objects.nonNull(filterType) && !PackageFilterType.contains(filterType)) {
       throw new RequestValidationException("Invalid Query Parameter for filter[type]");
     }
-    if (Objects.nonNull(filterSelected) && !PackageFilterSelected.contains(filterSelected)) {
+    if (Objects.nonNull(filterSelected) && !FilterSelected.contains(filterSelected)) {
       throw new RequestValidationException("Invalid Query Parameter for filter[selected]");
     }
     if (Objects.nonNull(searchField) && !PackageSearchField.contains(searchField)) {

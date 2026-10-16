@@ -13,7 +13,8 @@ public enum SearchType {
   ANY("any"),
   CONTAINS("contains"),
   EXACT_MATCH("exactmatch"),
-  BEGINS_WITH("beginswith");
+  BEGINS_WITH("beginswith"),
+  PROXIMITY("proximity");
 
   private final String value;
 

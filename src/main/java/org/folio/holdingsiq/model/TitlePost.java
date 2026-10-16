@@ -16,23 +16,24 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor(onConstructor_ = @JsonIgnore)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TitlePost {
+
   @JsonProperty("titleName")
   private String titleName;
-
-  @JsonProperty("edition")
-  private String edition;
-
-  @JsonProperty("publisherName")
-  private String publisherName;
 
   @JsonProperty("pubType")
   private String pubType;
 
-  @JsonProperty("description")
-  private String description;
+  @JsonProperty("publisherName")
+  private String publisherName;
 
   @JsonProperty("isPeerReviewed")
   private boolean isPeerReviewed;
+
+  @JsonProperty("edition")
+  private String edition;
+
+  @JsonProperty("description")
+  private String description;
 
   @JsonProperty("identifiersList")
   private List<Identifier> identifiersList;
@@ -40,6 +41,21 @@ public class TitlePost {
   @JsonProperty("contributorsList")
   private List<Contributor> contributorsList;
 
+  @JsonProperty("url")
+  private String titleUrl;
+
+  @JsonProperty("customCoverageList")
+  private List<CoverageDates> customCoverageList;
+
+  @JsonProperty("coverageStatement")
+  private String coverageStatement;
+
+  @JsonProperty("customEmbargoPeriod")
+  private EmbargoPeriod customEmbargoPeriod;
+
   @JsonUnwrapped
   private UserDefinedFields userDefinedFields;
+
+  @JsonProperty("proxy")
+  private Proxy proxy;
 }

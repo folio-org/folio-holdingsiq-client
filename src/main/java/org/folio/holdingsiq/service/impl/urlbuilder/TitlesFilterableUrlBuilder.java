@@ -1,100 +1,48 @@
 package org.folio.holdingsiq.service.impl.urlbuilder;
 
-import java.util.ArrayList;
+import static java.util.Objects.requireNonNullElse;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
-import org.folio.holdingsiq.model.FilterQuery;
-import org.folio.holdingsiq.model.Sort;
+import org.folio.holdingsiq.model.FilterFreeAccess;
+import org.folio.holdingsiq.model.FilterSelected;
+import org.folio.holdingsiq.model.Pageable;
+import org.folio.holdingsiq.model.SearchType;
+import org.folio.holdingsiq.model.TitleFilter;
+import org.folio.holdingsiq.model.TitleFilterType;
+import org.folio.holdingsiq.model.TitleSearchField;
 
-public class TitlesFilterableUrlBuilder {
+public class TitlesFilterableUrlBuilder extends FilterableUrlBuilder {
 
-  private static final String SEARCHFIELD_TITLENAME = "titlename";
-  private static final String SEARCHFIELD_ISXN = "isxn";
-  private static final String SEARCHFIELD_PUBLISHER = "publisher";
-  private static final String SEARCHFIELD_SUBJECT = "subject";
+  private final FilterSelected filterSelected;
+  private final TitleFilterType filterType;
+  private final FilterFreeAccess filterPackageFreeAccess;
+  private final List<Integer> filterPackageIds;
+  private final List<String> filterConsortia;
+  private final SearchType searchType;
+  private final TitleSearchField searchField;
 
-  private static final String DEFAULT_SELECTION = "all";
-  private static final String DEFAULT_RESOURCE_TYPE = "all";
-  private static final String DEFAULT_SEARCH_TYPE = "advanced";
-
-  private FilterQuery filterQuery;
-  private int page = 1;
-  private int count = 25;
-  private Sort sort;
-  private String searchType;
-
-  public TitlesFilterableUrlBuilder filter(FilterQuery filterQuery) {
-    this.filterQuery = filterQuery;
-    return this;
+  public TitlesFilterableUrlBuilder(TitleFilter titleFilter, Pageable pageable) {
+    super(titleFilter.query(), pageable, TitleSearchField.TITLE_NAME.getValue());
+    this.filterSelected = requireNonNullElse(titleFilter.filterSelected(), FilterSelected.ALL);
+    this.filterType = requireNonNullElse(titleFilter.filterType(), TitleFilterType.ALL);
+    this.filterPackageFreeAccess = titleFilter.filterPackageFreeAccess();
+    this.filterPackageIds = titleFilter.filterPackageIds();
+    this.filterConsortia = titleFilter.filterConsortia();
+    this.searchType = requireNonNullElse(titleFilter.searchType(), SearchType.ADVANCED);
+    this.searchField = requireNonNullElse(titleFilter.searchField(), TitleSearchField.TITLE_NAME);
   }
 
-  public TitlesFilterableUrlBuilder searchType(String searchType) {
-    this.searchType = searchType;
-    return this;
+  @Override
+  protected void addFilterParameters(List<String> parameters) {
+    addParameter(parameters, "searchfield", searchField.getValue());
+    addParameter(parameters, "selection", filterSelected.getValue());
+    addParameter(parameters, "resourcetype", filterType.getValue());
+    addParameter(parameters, "searchtype", searchType.getValue());
+    addListParameterIfNotEmpty(parameters, "packageidfilter", filterPackageIds, String::valueOf);
+    addParameterIfPresent(parameters, "packagefreeaccess", filterPackageFreeAccess, FilterFreeAccess::getValue);
+    addListParameterIfNotEmpty(parameters, "consortia", filterConsortia,
+      consortia -> URLEncoder.encode(consortia, StandardCharsets.UTF_8));
   }
-
-  public TitlesFilterableUrlBuilder page(int page) {
-    this.page = page;
-    return this;
-  }
-
-  public TitlesFilterableUrlBuilder count(int count) {
-    this.count = count;
-    return this;
-  }
-
-  public TitlesFilterableUrlBuilder sort(Sort sort) {
-    this.sort = sort;
-    return this;
-  }
-
-  public String build() {
-    String search = null;
-    String searchField;
-    if (filterQuery.getName() != null) {
-      search = filterQuery.getName();
-      searchField = SEARCHFIELD_TITLENAME;
-    } else if (filterQuery.getIsxn() != null) {
-      search = filterQuery.getIsxn();
-      searchField = SEARCHFIELD_ISXN;
-    } else if (filterQuery.getSubject() != null) {
-      search = filterQuery.getSubject();
-      searchField = SEARCHFIELD_SUBJECT;
-    } else if (filterQuery.getPublisher() != null) {
-      search = filterQuery.getPublisher();
-      searchField = SEARCHFIELD_PUBLISHER;
-    } else {
-      searchField = SEARCHFIELD_TITLENAME;
-    }
-
-    String query = new QueryableUrlBuilder()
-      .q(search)
-      .page(page)
-      .count(count)
-      .sort(sort)
-      .nameParameter(SEARCHFIELD_TITLENAME)
-      .build();
-
-    List<String> parameters = new ArrayList<>();
-    parameters.add("searchfield=" + searchField);
-    parameters.add("selection=" + Objects.toString(filterQuery.getSelected(), DEFAULT_SELECTION));
-    parameters.add("resourcetype=" + Objects.toString(filterQuery.getType(), DEFAULT_RESOURCE_TYPE));
-    parameters.add("searchtype=" + Objects.toString(searchType, DEFAULT_SEARCH_TYPE));
-    addPackageIdsFilter(parameters);
-    parameters.add(query);
-
-    return String.join("&", parameters);
-  }
-
-  private void addPackageIdsFilter(List<String> parameters) {
-    if (CollectionUtils.isNotEmpty(filterQuery.getPackageIds())) {
-      parameters.add("packageidfilter=" + filterQuery.getPackageIds()
-        .stream()
-        .map(String::valueOf)
-        .collect(Collectors.joining(",")));
-    }
-  }
-
 }
