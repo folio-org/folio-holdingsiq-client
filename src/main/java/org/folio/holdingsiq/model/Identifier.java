@@ -13,6 +13,9 @@ public class Identifier {
   @JsonProperty("id")
   public String id;
 
+  @JsonProperty("source")
+  public String source;
+
   /**
    * Sub-type for the identifier. This is used by only some identifiers to
    * designate Print, Online, etc. Empty=0, Print=1, Online=2, Preceding=3,

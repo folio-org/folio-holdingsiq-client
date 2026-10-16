@@ -1,0 +1,20 @@
+{
+  "kbid": 3333,
+  "titleName": "A Tale of Two Cities",
+  "customerResourcesList": [],
+  "titleRelationships": [
+    {
+      "resourceRelationshipId": 42,
+      "source": {
+        "kbid": 3333,
+        "name": "A Tale of Two Cities"
+      },
+      "target": {
+        "kbid": 4444,
+        "name": "A Tale of Two Cities (continued)"
+      },
+      "type": "CONTINUED_BY",
+      "date": "2020-01-01T00:00:00Z"
+    }
+  ]
+}

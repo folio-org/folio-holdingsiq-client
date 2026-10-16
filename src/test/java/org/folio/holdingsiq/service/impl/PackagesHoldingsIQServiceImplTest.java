@@ -10,9 +10,9 @@ import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
 import java.util.List;
+import org.folio.holdingsiq.model.FilterSelected;
 import org.folio.holdingsiq.model.PackageData;
 import org.folio.holdingsiq.model.PackageFilter;
-import org.folio.holdingsiq.model.PackageFilterSelected;
 import org.folio.holdingsiq.model.PackageFilterType;
 import org.folio.holdingsiq.model.PackagePut;
 import org.folio.holdingsiq.model.Pageable;
@@ -34,7 +34,7 @@ class PackagesHoldingsIQServiceImplTest extends HoldingsIQServiceTestConfig {
   @Test
   void retrievePackages() {
     var packageFilter = PackageFilter.builder()
-      .filterSelected(PackageFilterSelected.ORDERED_THROUGH_EBSCO)
+      .filterSelected(FilterSelected.ORDERED_THROUGH_EBSCO)
       .filterType(PackageFilterType.ALL)
       .searchType(SearchType.ADVANCED)
       .query("Query")
