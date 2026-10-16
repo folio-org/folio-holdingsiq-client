@@ -1,6 +1,17 @@
 ## v6.0.0 YYYY-mm-DD
 ### Breaking changes
 * Update package endpoints to use v2 API ([FHIQC-49](https://folio-org.atlassian.net/browse/FHIQC-49))
+* Update title and resource endpoints to use v2 API ([FHIQC-58](https://folio-org.atlassian.net/browse/FHIQC-58))
+  * `TitlesHoldingsIQService.retrieveTitles(...)` now takes `TitleFilter` and `Pageable` (aligned with packages)
+  * `TitlesHoldingsIQService.retrieveTitles(String)` removed
+  * By-package `TitlesHoldingsIQService.retrieveTitles(int packageId, ...)` moved to `ResourcesHoldingsIQService.retrieveResources(int packageId, ResourceFilter, Pageable)` and returns `Resources` (flat v2 list items) instead of `Titles`
+  * `ResourcesHoldingsIQService.retrieveResource(...)` and `postResource(...)` return `Resource` (flat v2 shape) instead of `Title`
+  * `FilterQuery` replaced with `TitleFilter` (enums `FilterSelected`, `TitleFilterType`, `TitleSearchField`, `FilterFreeAccess`)
+  * `TitleParametersValidator.validate(...)` now has the same signature as `PackageParametersValidator.validate(...)`
+  * `PackageFilterSelected` renamed to `FilterSelected` (shared by package and title filters)
+  * `PackageFilterFreeAccess` renamed to `FilterFreeAccess` (shared by package and title filters)
+  * `CustomerResources.visibilityData` (`VisibilityInfo`) replaced with `visibilityDetails` (`List<Visibility>`); `VisibilityInfo` removed
+  * `ResourcePut.isHidden` replaced with `visibilityDetails` (`List<Visibility>`)
 
 ### Features
 * Add additional fields to the PackagePost model ([FHIQC-57](https://folio-org.atlassian.net/browse/FHIQC-57))

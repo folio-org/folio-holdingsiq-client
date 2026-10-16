@@ -1,13 +1,14 @@
 package org.folio.holdingsiq.service.builder;
 
 import static java.util.Collections.singletonList;
-import static org.folio.holdingsiq.model.PackageFilterSelected.ORDERED_THROUGH_EBSCO;
-import static org.folio.holdingsiq.model.PackageFilterSelected.SELECTED;
+import static org.folio.holdingsiq.model.FilterSelected.ORDERED_THROUGH_EBSCO;
+import static org.folio.holdingsiq.model.FilterSelected.SELECTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.argumentSet;
 
 import java.util.List;
 import java.util.stream.Stream;
+import org.folio.holdingsiq.model.FilterFreeAccess;
 import org.folio.holdingsiq.model.PackageFilter;
 import org.folio.holdingsiq.model.PackageFilterType;
 import org.folio.holdingsiq.model.Pageable;
@@ -70,7 +71,10 @@ class PackagesFilterableUrlBuilderTest {
         "selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=Academic&offset=1&count=25&orderby=relevance"),
       argumentSet("query with hyphen",
         PackageFilter.builder().query("ABC-CLIO").build(), new Pageable(1, 25, Sort.RELEVANCE),
-        "selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=ABC-CLIO&offset=1&count=25&orderby=relevance")
+        "selection=all&contenttype=all&searchtype=advanced&searchfield=name&search=ABC-CLIO&offset=1&count=25&orderby=relevance"),
+      argumentSet("package free access filter",
+        PackageFilter.builder().filterPackageFreeAccess(FilterFreeAccess.TRUE).build(), DEFAULT_PAGEABLE,
+        DEFAULT_FILTER_PARAMS + "&packagefreeaccess=true" + DEFAULT_PAGING_PARAMS)
     );
   }
 

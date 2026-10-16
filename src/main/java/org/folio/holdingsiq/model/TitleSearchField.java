@@ -6,17 +6,18 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public enum PackageFilterSelected {
+public enum TitleSearchField {
 
-  ALL("all"),
-  SELECTED("selected"),
-  NOT_SELECTED("notselected"),
-  ORDERED_THROUGH_EBSCO("orderedthroughebsco");
+  TITLE_NAME("titlename"),
+  PUBLISHER("publisher"),
+  ISXN("isxn"),
+  SUBJECT("subject"),
+  ZDBID("zdbid");
 
   private final String value;
 
   public static boolean contains(String value) {
-    for (PackageFilterSelected c : values()) {
+    for (TitleSearchField c : values()) {
       if (c.value.equals(value)) {
         return true;
       }
@@ -24,11 +25,11 @@ public enum PackageFilterSelected {
     return false;
   }
 
-  public static PackageFilterSelected fromValue(String value) {
+  public static TitleSearchField fromValue(String value) {
     if (value == null) {
       return null;
     }
-    for (PackageFilterSelected c : values()) {
+    for (TitleSearchField c : values()) {
       if (c.value.equalsIgnoreCase(value)) {
         return c;
       }

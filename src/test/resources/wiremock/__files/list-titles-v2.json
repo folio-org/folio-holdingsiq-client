@@ -1,0 +1,40 @@
+{
+  "totalResults": 1,
+  "titles": [
+    {
+      "kbid": 3333,
+      "titleName": "A Tale of Two Cities",
+      "publisherName": "EBSCO",
+      "identifiersList": [
+        {
+          "id": "1362-3613",
+          "source": "AtoZ",
+          "subtype": 1,
+          "type": 0
+        }
+      ],
+      "isTitleCustom": false,
+      "pubType": "Book",
+      "listId": 2222,
+      "packageName": "Health & Wellness Resource Center",
+      "packageType": "Complete",
+      "vendorId": 5555,
+      "vendorName": "EBSCO",
+      "locationId": 777,
+      "isSelected": true,
+      "visibility": [
+        {
+          "category": "pf",
+          "hidden": false,
+          "reason": ""
+        }
+      ],
+      "coverageStatement": "Issues on or after 6/1/1992",
+      "url": "https://search.ebscohost.com/title/3333"
+    }
+  ],
+  "facets": {
+    "packages": [],
+    "subjects": []
+  }
+}
