@@ -7,20 +7,20 @@ import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.folio.holdingsiq.model.Configuration;
-import org.folio.holdingsiq.model.FilterQuery;
-import org.folio.holdingsiq.model.PackageCreated;
 import org.folio.holdingsiq.model.PackageId;
 import org.folio.holdingsiq.model.PackagePost;
+import org.folio.holdingsiq.model.Pageable;
+import org.folio.holdingsiq.model.ResourceFilter;
 import org.folio.holdingsiq.model.ResourceId;
 import org.folio.holdingsiq.model.ResourcePut;
+import org.folio.holdingsiq.model.Sort;
 import org.folio.holdingsiq.model.TitleCreated;
+import org.folio.holdingsiq.model.TitleFilter;
 import org.folio.holdingsiq.model.TitlePost;
-import org.folio.holdingsiq.model.Titles;
 import org.folio.holdingsiq.model.VendorPut;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -42,15 +42,14 @@ public class HoldingsIQServiceTestConfig {
     .notifier(new Slf4jNotifier(true))
     .withRootDirectory("src/test/resources/wiremock")).build();
 
-  protected FilterQuery filterQuery = FilterQuery.builder().build();
-  protected FilterQuery filterQueryWithPackageIds = FilterQuery.builder().packageIds(List.of(123, 23)).build();
+  protected ResourceFilter resourceFilter = ResourceFilter.builder().build();
+  protected TitleFilter titleFilterWithPackageIds = TitleFilter.builder().filterPackageIds(List.of(123, 23)).build();
+  protected Pageable pageable = new Pageable(PAGE_FOR_PARAM, COUNT_FOR_PARAM, Sort.NAME);
   protected VendorPut vendorPut = VendorPut.builder().build();
   protected ResourcePut resourcePut = ResourcePut.builder().build();
   protected PackagePost packagePost = PackagePost.builder().build();
   protected TitlePost titlePost = TitlePost.builder().build();
   protected TitleCreated titleCreated = new TitleCreated(TITLE_ID);
-  protected PackageCreated packageCreated = new PackageCreated(PACKAGE_ID);
-  protected Titles titles = Titles.builder().titleList(Collections.emptyList()).build();
   protected PackageId packageId = new PackageId(VENDOR_ID, PACKAGE_ID);
   protected ResourceId resourceId = new ResourceId(VENDOR_ID, PACKAGE_ID, TITLE_ID);
 

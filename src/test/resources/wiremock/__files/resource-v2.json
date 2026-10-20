@@ -1,0 +1,106 @@
+{
+  "kbid": 3333,
+  "titleName": "A Tale of Two Cities",
+  "publisherName": "www.ebsco.com",
+  "identifiersList": [
+    {
+      "id": "1",
+      "source": "AtoZ",
+      "subtype": 1,
+      "type": 1
+    }
+  ],
+  "subjectsList": [
+    {
+      "type": "BISAC",
+      "subject": "PHILOSOPHY / Movements / Critical Theory"
+    }
+  ],
+  "isTitleCustom": false,
+  "pubType": "Journal",
+  "description": "Some description of a title",
+  "edition": "2nd",
+  "isPeerReviewed": true,
+  "contributorsList": [
+    {
+      "type": "editor",
+      "contributor": "Smith, John"
+    }
+  ],
+  "alternateTitleList": [
+    {
+      "alternateTitle": "Boston Coll Law Rev",
+      "titleType": "Abbreviated"
+    }
+  ],
+  "listId": 2222,
+  "packageName": "Health & Wellness Resource Center (w/alt health module)",
+  "packageType": "Complete",
+  "proxy": {
+    "id": "guest",
+    "inherited": false,
+    "proxiedUrl": "http://ezproxy.myinstitute.edu/Login?url=http://search.ebscohost.com/Login.aspx?authtype=ip,uid&profile=ehost&defaultdb=27h"
+  },
+  "isPrimaryPackage": false,
+  "isPackageCustom": false,
+  "vendorId": 5555,
+  "vendorName": "EBSCO",
+  "locationId": 123,
+  "isSelected": true,
+  "isOrderedThroughEbsco": false,
+  "isTokenNeeded": false,
+  "kbartExcluded": true,
+  "kbartCoverageOwnership": false,
+  "visibility": [
+    {
+      "category": "pf",
+      "hidden": true,
+      "reason": "Hidden by customer"
+    },
+    {
+      "category": "marc",
+      "hidden": false,
+      "reason": ""
+    }
+  ],
+  "managedCoverageList": [
+    {
+      "beginCoverage": "2000-01-01",
+      "endCoverage": ""
+    }
+  ],
+  "customCoverageList": [
+    {
+      "beginCoverage": "2005-01-01",
+      "endCoverage": "2015-12-31"
+    }
+  ],
+  "coverageStatement": "Issues on or after 6/1/1992",
+  "managedEmbargoPeriod": {
+    "embargoUnit": "Months",
+    "embargoValue": 3
+  },
+  "customEmbargoPeriod": {
+    "embargoUnit": "Days",
+    "embargoValue": 10
+  },
+  "url": "http://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=27h",
+  "consortia": "KERIS",
+  "userDefinedField1": "Sample Text 1",
+  "userDefinedField5": "Sample Text 5",
+  "titleRelationships": [
+    {
+      "resourceRelationshipId": 42,
+      "source": {
+        "kbid": 3333,
+        "name": "A Tale of Two Cities"
+      },
+      "target": {
+        "kbid": 4444,
+        "name": "A Tale of Two Cities (continued)"
+      },
+      "type": "CONTINUED_BY",
+      "date": "2020-01-01T00:00:00Z"
+    }
+  ]
+}

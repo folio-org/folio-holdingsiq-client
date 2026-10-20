@@ -1,6 +1,7 @@
 ## v6.0.0 YYYY-mm-DD
 ### Breaking changes
 * Update package endpoints to use v2 API ([FHIQC-49](https://folio-org.atlassian.net/browse/FHIQC-49))
+* Update title and resource endpoints to use v2 API ([FHIQC-58](https://folio-org.atlassian.net/browse/FHIQC-58))
 
 ### Features
 * Add additional fields to the PackagePost model ([FHIQC-57](https://folio-org.atlassian.net/browse/FHIQC-57))

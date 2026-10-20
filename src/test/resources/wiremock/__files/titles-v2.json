@@ -1,0 +1,25 @@
+{
+  "totalResults": 10,
+  "titles": [
+    {
+      "kbid": 3333,
+      "titleName": "A Tale of Two Cities",
+      "customerResourcesList": [
+        {
+          "kbid": 3333,
+          "listId": 2222,
+          "isSelected": true
+        }
+      ]
+    },
+    {
+      "kbid": 3334,
+      "titleName": "Title without resources",
+      "customerResourcesList": []
+    }
+  ],
+  "facets": {
+    "packages": [],
+    "subjects": []
+  }
+}
