@@ -12,6 +12,8 @@ import org.folio.holdingsiq.model.TitleSearchField;
 
 public class ResourcesFilterableUrlBuilder extends FilterableUrlBuilder {
 
+  private static final String RESOURCE_TYPE_PARAM = "resourcetype";
+
   private final FilterSelected filterSelected;
   private final TitleFilterType filterType;
   private final FilterFreeAccess filterPackageFreeAccess;
@@ -27,9 +29,9 @@ public class ResourcesFilterableUrlBuilder extends FilterableUrlBuilder {
 
   @Override
   protected void addFilterParameters(List<String> parameters) {
-    addParameter(parameters, "searchfield", searchField.getValue());
-    addParameter(parameters, "selection", filterSelected.getValue());
-    addParameter(parameters, "resourcetype", filterType.getValue());
-    addParameterIfPresent(parameters, "packagefreeaccess", filterPackageFreeAccess, FilterFreeAccess::getValue);
+    addParameter(parameters, SEARCH_FIELD_PARAM, searchField.getValue());
+    addParameter(parameters, SELECTION_PARAM, filterSelected.getValue());
+    addParameter(parameters, RESOURCE_TYPE_PARAM, filterType.getValue());
+    addParameterIfPresent(parameters, PACKAGE_FREE_ACCESS_PARAM, filterPackageFreeAccess, FilterFreeAccess::getValue);
   }
 }

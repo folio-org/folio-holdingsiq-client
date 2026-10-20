@@ -14,6 +14,11 @@ import org.folio.holdingsiq.model.Pageable;
  */
 public abstract class FilterableUrlBuilder {
 
+  protected static final String SELECTION_PARAM = "selection";
+  protected static final String SEARCH_TYPE_PARAM = "searchtype";
+  protected static final String SEARCH_FIELD_PARAM = "searchfield";
+  protected static final String PACKAGE_FREE_ACCESS_PARAM = "packagefreeaccess";
+
   private final String query;
   private final Pageable pageable;
   private final String sortByNameParameter;

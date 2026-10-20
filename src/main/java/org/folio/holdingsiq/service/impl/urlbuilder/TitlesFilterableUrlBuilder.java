@@ -15,6 +15,10 @@ import org.folio.holdingsiq.model.TitleSearchField;
 
 public class TitlesFilterableUrlBuilder extends FilterableUrlBuilder {
 
+  private static final String RESOURCE_TYPE_PARAM = "resourcetype";
+  private static final String PACKAGE_ID_FILTER_PARAM = "packageidfilter";
+  private static final String CONSORTIA_PARAM = "consortia";
+
   private final FilterSelected filterSelected;
   private final TitleFilterType filterType;
   private final FilterFreeAccess filterPackageFreeAccess;
@@ -36,13 +40,13 @@ public class TitlesFilterableUrlBuilder extends FilterableUrlBuilder {
 
   @Override
   protected void addFilterParameters(List<String> parameters) {
-    addParameter(parameters, "searchfield", searchField.getValue());
-    addParameter(parameters, "selection", filterSelected.getValue());
-    addParameter(parameters, "resourcetype", filterType.getValue());
-    addParameter(parameters, "searchtype", searchType.getValue());
-    addListParameterIfNotEmpty(parameters, "packageidfilter", filterPackageIds, String::valueOf);
-    addParameterIfPresent(parameters, "packagefreeaccess", filterPackageFreeAccess, FilterFreeAccess::getValue);
-    addListParameterIfNotEmpty(parameters, "consortia", filterConsortia,
+    addParameter(parameters, SEARCH_FIELD_PARAM, searchField.getValue());
+    addParameter(parameters, SELECTION_PARAM, filterSelected.getValue());
+    addParameter(parameters, RESOURCE_TYPE_PARAM, filterType.getValue());
+    addParameter(parameters, SEARCH_TYPE_PARAM, searchType.getValue());
+    addListParameterIfNotEmpty(parameters, PACKAGE_ID_FILTER_PARAM, filterPackageIds, String::valueOf);
+    addParameterIfPresent(parameters, PACKAGE_FREE_ACCESS_PARAM, filterPackageFreeAccess, FilterFreeAccess::getValue);
+    addListParameterIfNotEmpty(parameters, CONSORTIA_PARAM, filterConsortia,
       consortia -> URLEncoder.encode(consortia, StandardCharsets.UTF_8));
   }
 }

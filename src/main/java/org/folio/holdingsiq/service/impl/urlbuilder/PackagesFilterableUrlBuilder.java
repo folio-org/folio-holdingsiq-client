@@ -17,6 +17,14 @@ import org.folio.holdingsiq.model.SearchType;
 
 public class PackagesFilterableUrlBuilder extends FilterableUrlBuilder {
 
+  private static final String SORT_BY_NAME_PARAM = "packagename";
+  private static final String CONTENT_TYPE_PARAM = "contenttype";
+  private static final String VISIBILITY_TYPE_PARAM = "visibilitytype";
+  private static final String HIGHLIGHT_TAG_PARAM = "highlighttag";
+  private static final String FACETS_TO_INCLUDE_PARAM = "facetstoinclude";
+  private static final String SUBJECT_FACET_COUNT_PARAM = "subjectfacetcount";
+  private static final String IS_PRIMARY_PACKAGE_PARAM = "isprimarypackage";
+
   private static final String SUBJECT_FACET = "subject";
   private static final String SUBJECT_FILTER_PARAM = "subjectfilter";
   private static final String SUBJECT_SCHEMA_PARAM = "subjectschema";
@@ -36,7 +44,7 @@ public class PackagesFilterableUrlBuilder extends FilterableUrlBuilder {
   private final List<String> filterSubjectSchemas;
 
   public PackagesFilterableUrlBuilder(PackageFilter packageFilter, Pageable pageable) {
-    super(packageFilter.query(), pageable, "packagename");
+    super(packageFilter.query(), pageable, SORT_BY_NAME_PARAM);
     this.filterPackageFreeAccess = packageFilter.filterPackageFreeAccess();
     this.filterPrimaryPackage = TRUE.equals(packageFilter.filterPrimaryPackage());
     this.filterVisibility = packageFilter.filterVisibility();
@@ -55,22 +63,22 @@ public class PackagesFilterableUrlBuilder extends FilterableUrlBuilder {
 
   @Override
   protected void addFilterParameters(List<String> parameters) {
-    addParameter(parameters, "selection", filterSelected.getValue());
-    addParameter(parameters, "contenttype", filterType.getValue());
-    addParameter(parameters, "searchtype", searchType.getValue());
-    addParameter(parameters, "searchfield", searchField.getValue());
-    addParameterIfPresent(parameters, "visibilitytype", filterVisibility, PackageFilterVisibility::getValue);
-    addParameterIfPresent(parameters, "highlighttag", highlightTag, String::valueOf);
+    addParameter(parameters, SELECTION_PARAM, filterSelected.getValue());
+    addParameter(parameters, CONTENT_TYPE_PARAM, filterType.getValue());
+    addParameter(parameters, SEARCH_TYPE_PARAM, searchType.getValue());
+    addParameter(parameters, SEARCH_FIELD_PARAM, searchField.getValue());
+    addParameterIfPresent(parameters, VISIBILITY_TYPE_PARAM, filterVisibility, PackageFilterVisibility::getValue);
+    addParameterIfPresent(parameters, HIGHLIGHT_TAG_PARAM, highlightTag, String::valueOf);
     if (includeSubjectFacet) {
-      addParameter(parameters, "facetstoinclude", SUBJECT_FACET);
-      addParameter(parameters, "subjectfacetcount", subjectFacetCount);
+      addParameter(parameters, FACETS_TO_INCLUDE_PARAM, SUBJECT_FACET);
+      addParameter(parameters, SUBJECT_FACET_COUNT_PARAM, subjectFacetCount);
     }
     addListParameterIfNotEmpty(parameters, SUBJECT_FILTER_PARAM, filterSubjectIds, String::valueOf);
     addListParameterIfNotEmpty(parameters, SUBJECT_SCHEMA_PARAM, filterSubjectSchemas,
       schema -> URLEncoder.encode(schema, StandardCharsets.UTF_8));
-    addParameterIfPresent(parameters, "packagefreeaccess", filterPackageFreeAccess, FilterFreeAccess::getValue);
+    addParameterIfPresent(parameters, PACKAGE_FREE_ACCESS_PARAM, filterPackageFreeAccess, FilterFreeAccess::getValue);
     if (filterPrimaryPackage) {
-      addParameter(parameters, "isprimarypackage", true);
+      addParameter(parameters, IS_PRIMARY_PACKAGE_PARAM, true);
     }
   }
 }
