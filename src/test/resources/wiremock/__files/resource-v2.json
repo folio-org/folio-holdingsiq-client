@@ -51,6 +51,7 @@
   "isTokenNeeded": false,
   "kbartExcluded": true,
   "kbartCoverageOwnership": false,
+  "customCoverageOwnership": "customer",
   "visibility": [
     {
       "category": "pf",

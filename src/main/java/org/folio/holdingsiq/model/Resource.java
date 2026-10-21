@@ -101,6 +101,9 @@ public class Resource {
   @JsonProperty("kbartCoverageOwnership")
   private Boolean kbartCoverageOwnership;
 
+  @JsonProperty("customCoverageOwnership")
+  private String customCoverageOwnership;
+
   @JsonProperty("visibility")
   private List<Visibility> visibilityDetails;
 
